@@ -1,6 +1,7 @@
-import React, { useRef } from 'react';
+import React, { useRef, useMemo } from 'react';
 import ChatBot from "react-chatbotify";
 import { DEFAULTS, createChatBotSettings } from '../utils/bot-utils';
+import { createBotFlow } from '../utils/bot-flow';
 import useQueryHandler from '../hooks/useQueryHandler';
 import useThemeHandler from '../hooks/useThemeHandler';
 
@@ -25,30 +26,23 @@ const QABot = (props) => {
   const { fetchAndStreamResponse, hasError } = useQueryHandler(apiKey);
   const getThemeColors = useThemeHandler(containerRef, embedded);
 
-  const flow = {
-    start: {
-      message: welcome,
-      path: 'loop'
-    },
-    loop: {
-      message: async (params) => {
-        await fetchAndStreamResponse(params);
-      },
-      path: () => {
-        if (hasError) {
-          return 'start'
-        }
-        return 'loop'
-      }
-    }
-  }
+  // Create flow configuration with memoization
+  const flow = useMemo(() => {
+    return createBotFlow({
+      fetchAndStreamResponse,
+      hasError,
+      welcome
+    });
+  }, [fetchAndStreamResponse, hasError, welcome]);
 
-  // Create settings for ChatBot
-  const settings = createChatBotSettings({
-    getThemeColors,
-    prompt,
-    disabled
-  });
+  // Create settings for ChatBot with memoization
+  const settings = useMemo(() => {
+    return createChatBotSettings({
+      getThemeColors,
+      prompt,
+      disabled
+    });
+  }, [getThemeColors, prompt, disabled]);
 
   return (
     <div className="access-qa-bot" ref={containerRef}>
