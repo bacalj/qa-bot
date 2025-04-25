@@ -1,9 +1,10 @@
 import React, { useRef } from 'react';
 import ChatBot from "react-chatbotify";
-import '../App.css';
-import { DEFAULTS, CONSTANTS } from '../utils/bot-utils';
+import { DEFAULTS, createChatBotSettings } from '../utils/bot-utils';
 import useQueryHandler from '../hooks/useQueryHandler';
 import useThemeHandler from '../hooks/useThemeHandler';
+
+import '../App.css';
 
 const QABot = (props) => {
   // Set relevant vars to incoming props or defaults
@@ -42,47 +43,17 @@ const QABot = (props) => {
     }
   }
 
+  // Create settings for ChatBot
+  const settings = createChatBotSettings({
+    getThemeColors,
+    prompt,
+    disabled
+  });
+
   return (
     <div className="access-qa-bot" ref={containerRef}>
       <ChatBot
-        settings={{
-          general: getThemeColors(),
-          header: {
-            title: 'ACCESS Q&A Bot',
-            avatar: CONSTANTS.avatarUrl,
-          },
-          chatInput: {
-            enabledPlaceholderText: prompt,
-            disabledPlaceholderText: 'Please log in to ask questions.',
-            disabled: disabled
-          },
-          chatHistory: { disabled: true },
-          botBubble: {
-            simStream: true,
-            dangerouslySetInnerHtml: true
-          },
-          chatButton: {
-            icon: CONSTANTS.avatarUrl,
-          },
-          tooltip: {
-            text: 'Ask me about ACCESS! 😊',
-          },
-          audio: {
-            disabled: true,
-          },
-          emoji: {
-            disabled: true,
-          },
-          fileAttachment: {
-            disabled: true,
-          },
-          notification: {
-            disabled: true,
-          },
-          footer: {
-            text: (<div>Find out more <a href="https://support.access-ci.org/tools/access-qa-tool">about this tool</a> or <a href="https://docs.google.com/forms/d/e/1FAIpQLSeWnE1r738GU1u_ri3TRpw9dItn6JNPi7-FH7QFB9bAHSVN0w/viewform">give us feedback</a>.</div>),
-          },
-        }}
+        settings={settings}
         isOpen={isOpen}
         onClose={onClose}
         flow={flow}

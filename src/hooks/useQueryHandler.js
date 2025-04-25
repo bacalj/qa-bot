@@ -21,7 +21,7 @@ const useQueryHandler = (apiKey) => {
         body: JSON.stringify({ query: params.userInput })
       };
 
-      const response = await fetch(CONSTANTS.queryEndpoint, requestOptions);
+      const response = await fetch(CONSTANTS.queryEndpointUrl, requestOptions);
       const body = await response.json();
       const text = body.response;
 
