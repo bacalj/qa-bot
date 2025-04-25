@@ -1,49 +1,28 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef } from 'react';
 import ChatBot from "react-chatbotify";
 import '../App.css';
+import { DEFAULTS, CONSTANTS } from '../utils/bot-utils';
+import useQueryHandler from '../hooks/useQueryHandler';
+import useThemeHandler from '../hooks/useThemeHandler';
 
 const QABot = (props) => {
   // Set relevant vars to incoming props or defaults
-  const welcome = props.welcome || 'Hello! What can I help you with?';
-  const prompt = props.prompt || 'Questions should stand alone and not refer to previous ones.';
-  const embedded = props.embedded || false;
-  const isLoggedIn = props.isLoggedIn !== undefined ? props.isLoggedIn : false;
+  const welcome = props.welcome || DEFAULTS.welcome;
+  const prompt = props.prompt || DEFAULTS.prompt;
+  const embedded = props.embedded || DEFAULTS.embedded;
+  const isLoggedIn = props.isLoggedIn !== undefined ? props.isLoggedIn : DEFAULTS.isLoggedIn;
   const isAnonymous = props.isAnonymous !== undefined ? props.isAnonymous : !isLoggedIn;
   const disabled = props.disabled !== undefined ? props.disabled : isAnonymous;
-  const isOpen = props.isOpen !== undefined ? props.isOpen : false;
+  const isOpen = props.isOpen !== undefined ? props.isOpen : DEFAULTS.isOpen;
   const onClose = props.onClose;
   const apiKey = props.apiKey || process.env.REACT_APP_API_KEY;
-  const queryEndpoint = 'https://access-ai.ccs.uky.edu/api/query';
 
-  // Ref for the container element
+  // local react state
   const containerRef = useRef(null);
-  const [hasError, setHasError] = useState(false);
 
-  const handleQuery = async (params) => {
-    // POST question to the QA API
-    try {
-      const requestOptions = {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-API-KEY': apiKey
-        },
-        body: JSON.stringify({ query: params.userInput })
-      };
-
-      const response = await fetch(queryEndpoint, requestOptions);
-      const body = await response.json();
-      const text = body.response;
-
-      for (let i = 0; i < text.length; i++) {
-        await params.streamMessage(text.slice(0, i + 1));
-        await new Promise(resolve => setTimeout(resolve, 2));
-      }
-    } catch (error) {
-      await params.injectMessage("Unable to contact the Q&A Bot. Please try again later.");
-      setHasError(true);
-    }
-  }
+  // Custom hooks
+  const { fetchAndStreamResponse, hasError } = useQueryHandler(apiKey);
+  const getThemeColors = useThemeHandler(containerRef, embedded);
 
   const flow = {
     start: {
@@ -52,7 +31,7 @@ const QABot = (props) => {
     },
     loop: {
       message: async (params) => {
-        await handleQuery(params);
+        await fetchAndStreamResponse(params);
       },
       path: () => {
         if (hasError) {
@@ -63,38 +42,6 @@ const QABot = (props) => {
     }
   }
 
-  // Get theme colors, with fallbacks and CSS variable support
-  const getThemeColors = () => {
-    // Get colors from CSS variables if available, fall back to defaults
-    const getCSSVariable = (name, fallback) => {
-      if (containerRef.current) {
-        // First check the container itself
-        const containerStyle = getComputedStyle(containerRef.current);
-        const containerValue = containerStyle.getPropertyValue(name);
-        if (containerValue && containerValue.trim() !== '') {
-          return containerValue.trim();
-        }
-
-        // Then check parent (useful for web component shadow DOM)
-        if (containerRef.current.parentElement) {
-          const parentStyle = getComputedStyle(containerRef.current.parentElement);
-          const parentValue = parentStyle.getPropertyValue(name);
-          if (parentValue && parentValue.trim() !== '') {
-            return parentValue.trim();
-          }
-        }
-      }
-      return fallback;
-    };
-
-    return {
-      primaryColor: getCSSVariable('--primary-color', '#1a5b6e'),
-      secondaryColor: getCSSVariable('--secondary-color', '#107180'),
-      fontFamily: getCSSVariable('--font-family', 'Arial, sans-serif'),
-      embedded: embedded
-    };
-  };
-
   return (
     <div className="access-qa-bot" ref={containerRef}>
       <ChatBot
@@ -102,7 +49,7 @@ const QABot = (props) => {
           general: getThemeColors(),
           header: {
             title: 'ACCESS Q&A Bot',
-            avatar: 'https://support.access-ci.org/themes/contrib/asp-theme/images/icons/ACCESS-arrrow.svg',
+            avatar: CONSTANTS.avatarUrl,
           },
           chatInput: {
             enabledPlaceholderText: prompt,
@@ -115,7 +62,7 @@ const QABot = (props) => {
             dangerouslySetInnerHtml: true
           },
           chatButton: {
-            icon: 'https://support.access-ci.org/themes/contrib/asp-theme/images/icons/ACCESS-arrrow.svg',
+            icon: CONSTANTS.avatarUrl,
           },
           tooltip: {
             text: 'Ask me about ACCESS! 😊',
