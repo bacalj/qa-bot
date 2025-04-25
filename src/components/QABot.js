@@ -1,35 +1,23 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import ChatBot from "react-chatbotify";
 import '../App.css';
 
 const QABot = (props) => {
+  // Set relevant vars to incoming props or defaults
   const welcome = props.welcome || 'Hello! What can I help you with?';
   const prompt = props.prompt || 'Questions should stand alone and not refer to previous ones.';
   const embedded = props.embedded || false;
+  const isLoggedIn = props.isLoggedIn !== undefined ? props.isLoggedIn : false;
+  const isAnonymous = props.isAnonymous !== undefined ? props.isAnonymous : !isLoggedIn;
+  const disabled = props.disabled !== undefined ? props.disabled : isAnonymous;
+  const isOpen = props.isOpen !== undefined ? props.isOpen : false;
+  const onClose = props.onClose;
+  const apiKey = props.apiKey || process.env.REACT_APP_API_KEY;
+  const queryEndpoint = 'https://access-ai.ccs.uky.edu/api/query';
 
   // Ref for the container element
   const containerRef = useRef(null);
-
-  const isLoggedIn = props.isLoggedIn !== undefined ? props.isLoggedIn : false;
-  const isAnonymous = props.isAnonymous !== undefined ? props.isAnonymous : !isLoggedIn;
-
-  // Derive disabled state, respecting explicit disabled prop if provided
-  const disabled = props.disabled !== undefined ? props.disabled : isAnonymous;
-
-  // Use isOpen prop with default to false if not provided
-  const isOpen = props.isOpen !== undefined ? props.isOpen : false;
-  const onClose = props.onClose;
-
-  const apiKey = props.apiKey || process.env.REACT_APP_API_KEY;
-  const queryEndpoint = 'https://access-ai.ccs.uky.edu/api/query';
-  let hasError = false;
-
-  // Get theme colors from CSS variables if available
-  useEffect(() => {
-    if (containerRef.current && containerRef.current.parentElement) {
-      // If container's parent has CSS variables, they'll be picked up in getThemeColors
-    }
-  }, []);
+  const [hasError, setHasError] = useState(false);
 
   const handleQuery = async (params) => {
     // POST question to the QA API
@@ -53,7 +41,7 @@ const QABot = (props) => {
       }
     } catch (error) {
       await params.injectMessage("Unable to contact the Q&A Bot. Please try again later.");
-      hasError = true;
+      setHasError(true);
     }
   }
 
