@@ -23,17 +23,17 @@ const QABot = (props) => {
   const containerRef = useRef(null);
 
   // Custom hooks
-  const { fetchAndStreamResponse, hasError } = useQueryHandler(apiKey);
+  const { fetchAndStreamResponse, hasApiError } = useQueryHandler(apiKey);
   const getThemeColors = useThemeHandler(containerRef, embedded);
 
   // Create flow configuration with memoization
   const flow = useMemo(() => {
     return createBotFlow({
       fetchAndStreamResponse,
-      hasError,
+      hasApiError,
       welcome
     });
-  }, [fetchAndStreamResponse, hasError, welcome]);
+  }, [fetchAndStreamResponse, hasApiError, welcome]);
 
   // Create settings for ChatBot with memoization
   const settings = useMemo(() => {

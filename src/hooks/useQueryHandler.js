@@ -22,7 +22,6 @@ const useQueryHandler = (apiKey) => {
       };
 
       const response = await fetch(CONSTANTS.queryEndpointUrl, requestOptions);
-      console.log('response', response);
       const body = await response.json();
       const text = body.response;
 
@@ -30,10 +29,12 @@ const useQueryHandler = (apiKey) => {
         await params.streamMessage(text.slice(0, i + 1));
         await new Promise(resolve => setTimeout(resolve, 2));
       }
+
+      return { success: true };
     } catch (error) {
       console.error('Error fetching and streaming response:', error);
-      await params.injectMessage("Unable to contact the Q&A Bot. Please try again later.");
       setHasApiError(true);
+      return { error: true };
     }
   };
 
