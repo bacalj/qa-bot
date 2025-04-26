@@ -7,7 +7,7 @@ import { CONSTANTS } from '../utils/bot-utils';
  * @returns {Object} - Query handling functions and state
  */
 const useQueryHandler = (apiKey) => {
-  const [hasError, setHasError] = useState(false);
+  const [hasApiError, setHasApiError] = useState(false);
 
   const fetchAndStreamResponse = async (params) => {
     // POST question to the QA API
@@ -22,6 +22,7 @@ const useQueryHandler = (apiKey) => {
       };
 
       const response = await fetch(CONSTANTS.queryEndpointUrl, requestOptions);
+      console.log('response', response);
       const body = await response.json();
       const text = body.response;
 
@@ -30,16 +31,17 @@ const useQueryHandler = (apiKey) => {
         await new Promise(resolve => setTimeout(resolve, 2));
       }
     } catch (error) {
+      console.error('Error fetching and streaming response:', error);
       await params.injectMessage("Unable to contact the Q&A Bot. Please try again later.");
-      setHasError(true);
+      setHasApiError(true);
     }
   };
 
-  const resetError = () => setHasError(false);
+  const resetError = () => setHasApiError(false);
 
   return {
     fetchAndStreamResponse,
-    hasError,
+    hasApiError,
     resetError
   };
 };
