@@ -1,16 +1,12 @@
-import { useState } from 'react';
 import { CONSTANTS } from '../utils/bot-utils';
 
 /**
  * Custom hook to handle API queries and stream responses
  * @param {string} apiKey - API key for authentication
- * @returns {Object} - Query handling functions and state
+ * @returns {Object} - Query handling function
  */
 const useQueryHandler = (apiKey) => {
-  const [hasApiError, setHasApiError] = useState(false);
-
   const fetchAndStreamResponse = async (params) => {
-    // POST question to the QA API
     try {
       const requestOptions = {
         method: 'POST',
@@ -22,6 +18,11 @@ const useQueryHandler = (apiKey) => {
       };
 
       const response = await fetch(CONSTANTS.queryEndpointUrl, requestOptions);
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
       const body = await response.json();
       const text = body.response;
 
@@ -30,21 +31,14 @@ const useQueryHandler = (apiKey) => {
         await new Promise(resolve => setTimeout(resolve, 2));
       }
 
-      return { success: true };
+      return text;
     } catch (error) {
       console.error('Error fetching and streaming response:', error);
-      setHasApiError(true);
       return { error: true };
     }
   };
 
-  const resetError = () => setHasApiError(false);
-
-  return {
-    fetchAndStreamResponse,
-    hasApiError,
-    resetError
-  };
+  return { fetchAndStreamResponse };
 };
 
 export default useQueryHandler;

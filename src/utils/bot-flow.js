@@ -1,36 +1,56 @@
+import { createMainMenuFlow } from './flows/main-menu-flow';
+import { createQAFlow } from './flows/qa-flow';
+import { createTicketFlow } from './flows/ticket-flow';
+import { createFeedbackFlow } from './flows/feedback-flow';
+
 /**
  * Defines the conversation flow for the QA Bot
  *
- * @param {Object} params Configuration parameters
- * @param {Function} params.fetchAndStreamResponse Function to fetch and stream API responses
- * @param {boolean} params.hasApiError Error state from the API handler
- * @param {string} params.welcome Welcome message text
+ * @param {Object} params Configuration
+ * @param {Function} params.fetchAndStreamResponse
+ * @param {string} params.welcome Welcome text
+ * @param {Object} params.ticketForm Form state for help tickets
+ * @param {Function} params.setTicketForm Function to update ticket form
+ * @param {Object} params.feedbackForm Form state for feedback
+ * @param {Function} params.setFeedbackForm Function to update feedback form
  * @returns {Object} Flow configuration for the ChatBot component
  */
-export const createBotFlow = ({ fetchAndStreamResponse, hasApiError, welcome }) => {
-    const originalFlow = {
-      start: {
-        message: welcome,
-        path: 'loop'
-      },
-      loop: {
-        message: async (params) => {
-          const result = await fetchAndStreamResponse(params);
-          if (result?.error) {
-            // Give user feedback, react state will have been updated in time for path computation
-            return "Unable to contact the Q&A Bot. Please try again later.";
-          } else {
-            return result;
-          }
-        },
-        path: () => {
-          // now we have react state we can refer to
-          if (hasApiError) {
-            return 'start'
-          }
-          return 'loop'
-        }
-      },
-    }
-    return originalFlow;
-  }
+export const createBotFlow = ({
+  fetchAndStreamResponse,
+  welcome,
+  ticketForm = {},
+  setTicketForm = () => {},
+  feedbackForm = {},
+  setFeedbackForm = () => {}
+}) => {
+  // Create individual flows
+  const mainMenuFlow = createMainMenuFlow({
+    welcome,
+    setTicketForm,
+    setFeedbackForm
+  });
+
+  const qaFlow = createQAFlow({
+    fetchAndStreamResponse
+  });
+
+  const ticketFlow = createTicketFlow({
+    ticketForm,
+    setTicketForm
+  });
+
+  const feedbackFlow = createFeedbackFlow({
+    feedbackForm,
+    setFeedbackForm
+  });
+
+  // Combine all flows with simple spread
+  const flow = {
+    ...mainMenuFlow,
+    ...qaFlow,
+    ...ticketFlow,
+    ...feedbackFlow
+  };
+
+  return flow;
+}

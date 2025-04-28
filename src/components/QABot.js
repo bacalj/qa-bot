@@ -1,4 +1,4 @@
-import React, { useRef, useMemo } from 'react';
+import React, { useRef, useMemo, useState } from 'react';
 import ChatBot from "react-chatbotify";
 import { DEFAULTS, createChatBotSettings } from '../utils/bot-utils';
 import { createBotFlow } from '../utils/bot-flow';
@@ -21,19 +21,24 @@ const QABot = (props) => {
 
   // local react state
   const containerRef = useRef(null);
+  const [ticketForm, setTicketForm] = useState({});
+  const [feedbackForm, setFeedbackForm] = useState({});
 
   // Custom hooks
-  const { fetchAndStreamResponse, hasApiError } = useQueryHandler(apiKey);
+  const { fetchAndStreamResponse } = useQueryHandler(apiKey);
   const getThemeColors = useThemeHandler(containerRef, embedded);
 
   // Create flow configuration with memoization
   const flow = useMemo(() => {
     return createBotFlow({
       fetchAndStreamResponse,
-      hasApiError,
-      welcome
+      welcome,
+      ticketForm,
+      setTicketForm,
+      feedbackForm,
+      setFeedbackForm
     });
-  }, [fetchAndStreamResponse, hasApiError, welcome]);
+  }, [fetchAndStreamResponse, welcome, ticketForm, setTicketForm, feedbackForm, setFeedbackForm]);
 
   // Create settings for ChatBot with memoization
   const settings = useMemo(() => {

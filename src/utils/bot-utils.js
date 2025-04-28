@@ -11,7 +11,13 @@ export const CONSTANTS = {
   feedbackText: 'give us feedback',
   headerTitleText: 'ACCESS Q&A Bot',
   disabledPlaceholderText: 'Please log in to ask questions.',
-  tooltipText: 'Ask me about ACCESS! 😊'
+  tooltipText: 'Ask me about ACCESS! 😊',
+
+  // compose urls for form link assembly
+  serviceFormBaseUrl: "https://access-ci.atlassian.net/servicedesk/customer/portal",
+  supportTicketSegment: "/portal/2/group/3/create/17",
+  cantLoginAccessSegment: "/portal/2/create/30",
+  cantLoginResourceProviderSegment: "/2/create/31"
 };
 
 
