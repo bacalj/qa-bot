@@ -13,11 +13,15 @@ export const CONSTANTS = {
   disabledPlaceholderText: 'Please log in to ask questions.',
   tooltipText: 'Ask me about ACCESS! 😊',
 
-  // compose urls for form link assembly
+  // component strings for composing form link urls
   serviceFormBaseUrl: "https://access-ci.atlassian.net/servicedesk/customer/portal",
-  supportTicketSegment: "/portal/2/group/3/create/17",
-  cantLoginAccessSegment: "/portal/2/create/30",
-  cantLoginResourceProviderSegment: "/2/create/31"
+  supportTicketSegment: "/2/group/3/create/17",
+  cantLoginAccessSegment: "/2/create/30",
+  cantLoginResourceProviderSegment: "/2/create/31",
+  // TODO: I think we need a dedicated path for feedbackSegment
+  // As a workaround we route feedback data to corresponding fields
+  // in the standard support ticket form
+  feedbackSegment: "/2/group/3/create/17"
 };
 
 
@@ -30,6 +34,55 @@ export const DEFAULTS = {
   isAnonymous: true,
   disabled: true,
   isOpen: false,
+};
+
+/**
+ * Builds a Jira Service Desk URL based on form data
+ * @param {Object} formData Form data for the ticket
+ * @param {string} ticketType Type of ticket to create (default: support)
+ * @returns {string} Complete URL for form submission
+ */
+export const buildServiceDeskUrl = (formData, ticketType = 'support') => {
+  // Map ticket types to their URL segments from CONSTANTS
+  const ticketSegments = {
+    support: CONSTANTS.supportTicketSegment,
+    loginAccess: CONSTANTS.cantLoginAccessSegment,
+    loginProvider: CONSTANTS.cantLoginResourceProviderSegment,
+    feedback: CONSTANTS.feedbackSegment
+  };
+
+  const segment = ticketSegments[ticketType] || ticketSegments.support;
+
+  // Build query params from form data
+  const params = new URLSearchParams();
+  Object.entries(formData).forEach(([key, value]) => {
+    if (value) params.append(key, value);
+  });
+
+  return `${CONSTANTS.serviceFormBaseUrl}${segment}?${params.toString()}`;
+};
+
+/**
+ * Prepares data for future API submission
+ * @param {Object} formData Form data for the ticket
+ * @param {string} ticketType Type of ticket to create
+ * @returns {Object} Formatted data for API submission
+ */
+export const prepareApiSubmission = (formData, ticketType = 'support') => {
+  // Map ticket types to their requestTypeId values
+  const requestTypeIds = {
+    support: 17,
+    loginAccess: 30,
+    loginProvider: 31
+  };
+
+  return {
+    serviceDeskId: 2,
+    requestTypeId: requestTypeIds[ticketType] || requestTypeIds.support,
+    requestFieldValues: {
+      ...formData
+    }
+  };
 };
 
 /**
