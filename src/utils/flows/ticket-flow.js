@@ -139,13 +139,18 @@ export const createTicketFlow = ({ ticketForm = {}, setTicketForm = () => {} }) 
     },
     access_login_summary: {
       message: () => {
+        let fileInfo = '';
+        if (ticketForm.uploadedFiles && ticketForm.uploadedFiles.length > 0) {
+          fileInfo = `\nAttachments: ${ticketForm.uploadedFiles.length} file(s) attached`;
+        }
+
         return `Thank you for providing your ACCESS login issue details. Here's a summary:\n\n` +
                `Name: ${ticketForm.name || 'Not provided'}\n` +
                `Email: ${ticketForm.email || 'Not provided'}\n` +
                `ACCESS ID: ${ticketForm.accessid || 'Not provided'}\n` +
                `Identity Provider: ${ticketForm.identityProvider || 'Not provided'}\n` +
                `Browser: ${ticketForm.browser || 'Not provided'}\n` +
-               `Issue Description: ${ticketForm.description || 'Not provided'}\n\n` +
+               `Issue Description: ${ticketForm.description || 'Not provided'}${fileInfo}\n\n` +
                `Would you like to submit this ticket?`;
       },
       options: ["Submit Ticket", "Back to Main Menu"],
@@ -175,7 +180,11 @@ export const createTicketFlow = ({ ticketForm = {}, setTicketForm = () => {} }) 
           window.open(url, '_blank');
 
           // Also prepare API submission data for future implementation
-          const apiData = prepareApiSubmission(formData, 'loginAccess');
+          const apiData = prepareApiSubmission(
+            formData,
+            'loginAccess',
+            ticketForm.uploadedFiles || []
+          );
           console.log("API submission data:", apiData);
         }
       },
@@ -232,13 +241,18 @@ export const createTicketFlow = ({ ticketForm = {}, setTicketForm = () => {} }) 
     },
     affiliated_login_summary: {
       message: () => {
+        let fileInfo = '';
+        if (ticketForm.uploadedFiles && ticketForm.uploadedFiles.length > 0) {
+          fileInfo = `\nAttachments: ${ticketForm.uploadedFiles.length} file(s) attached`;
+        }
+
         return `Thank you for providing your resource login issue details. Here's a summary:\n\n` +
                `Name: ${ticketForm.name || 'Not provided'}\n` +
                `Email: ${ticketForm.email || 'Not provided'}\n` +
                `ACCESS ID: ${ticketForm.accessid || 'Not provided'}\n` +
                `Resource: ${ticketForm.resource || 'Not provided'}\n` +
                `Resource User ID: ${ticketForm.userIdResource || 'Not provided'}\n` +
-               `Issue Description: ${ticketForm.description || 'Not provided'}\n\n` +
+               `Issue Description: ${ticketForm.description || 'Not provided'}${fileInfo}\n\n` +
                `Would you like to submit this ticket?`;
       },
       options: ["Submit Ticket", "Back to Main Menu"],
@@ -268,7 +282,11 @@ export const createTicketFlow = ({ ticketForm = {}, setTicketForm = () => {} }) 
           window.open(url, '_blank');
 
           // Also prepare API submission data for future implementation
-          const apiData = prepareApiSubmission(formData, 'loginProvider');
+          const apiData = prepareApiSubmission(
+            formData,
+            'loginProvider',
+            ticketForm.uploadedFiles || []
+          );
           console.log("API submission data:", apiData);
         }
       },
@@ -372,6 +390,11 @@ export const createTicketFlow = ({ ticketForm = {}, setTicketForm = () => {} }) 
     },
     general_help_ticket_summary: {
       message: () => {
+        let fileInfo = '';
+        if (ticketForm.uploadedFiles && ticketForm.uploadedFiles.length > 0) {
+          fileInfo = `\nAttachments: ${ticketForm.uploadedFiles.length} file(s) attached`;
+        }
+
         return `Thank you for providing your issue details. Here's a summary:\n\n` +
                `Name: ${ticketForm.name || 'Not provided'}\n` +
                `Email: ${ticketForm.email || 'Not provided'}\n` +
@@ -380,7 +403,7 @@ export const createTicketFlow = ({ ticketForm = {}, setTicketForm = () => {} }) 
                `Category: ${ticketForm.category || 'Not provided'}\n` +
                `Priority: ${ticketForm.priority || 'Not provided'}\n` +
                `Keywords: ${ticketForm.keywords || 'Not provided'}\n` +
-               `Issue Description: ${ticketForm.description || 'Not provided'}\n\n` +
+               `Issue Description: ${ticketForm.description || 'Not provided'}${fileInfo}\n\n` +
                `Would you like to submit this ticket?`;
       },
       options: ["Submit Ticket", "Back to Main Menu"],
@@ -411,7 +434,11 @@ export const createTicketFlow = ({ ticketForm = {}, setTicketForm = () => {} }) 
           window.open(url, '_blank');
 
           // Also prepare API submission data for future implementation
-          const apiData = prepareApiSubmission(formData, 'support');
+          const apiData = prepareApiSubmission(
+            formData,
+            'support',
+            ticketForm.uploadedFiles || []
+          );
           console.log("API submission data:", apiData);
         }
       },

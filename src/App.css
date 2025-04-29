@@ -46,5 +46,53 @@
   .rcb-chat-window {
     width: 100% !important;
     max-width: 100%;
-  } 
+  }
+}
+
+.file-upload-container {
+  width: 100%;
+  margin: 10px 0;
+}
+
+.file-upload-dropzone {
+  border: 2px dashed #ccc;
+  border-radius: 8px;
+  padding: 20px;
+  background-color: #f8f8f8;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.file-upload-dropzone.active {
+  border-color: #107180;
+  background-color: rgba(16, 113, 128, 0.1);
+}
+
+.upload-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.upload-content p {
+  margin: 8px 0;
+  color: #333;
+}
+
+.selected-files {
+  width: 100%;
+  margin-top: 10px;
+  text-align: left;
+}
+
+.selected-files ul {
+  margin: 0;
+  padding: 0 0 0 20px;
+  list-style-type: disc;
+}
+
+.selected-files li {
+  font-size: 14px;
+  padding: 2px 0;
 }

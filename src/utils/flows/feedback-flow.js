@@ -81,7 +81,12 @@ export const createFeedbackFlow = ({
     },
     feedback_summary: {
       message: () => {
-        return `Thank you for sharing your feedback!`;
+        let fileInfo = '';
+        if (feedbackForm.uploadedFiles && feedbackForm.uploadedFiles.length > 0) {
+          fileInfo = `\nAttachments: ${feedbackForm.uploadedFiles.length} file(s) attached`;
+        }
+
+        return `Thank you for sharing your feedback!${fileInfo}`;
       },
       options: ["Submit Feedback", "Back to Main Menu"],
       chatDisabled: true,
@@ -107,7 +112,11 @@ export const createFeedbackFlow = ({
           window.open(url, '_blank');
 
           // Also prepare API data for future use
-          const apiData = prepareApiSubmission(formData, 'support');
+          const apiData = prepareApiSubmission(
+            formData,
+            'support',
+            feedbackForm.uploadedFiles || []
+          );
           console.log("API submission data:", apiData);
         }
       },
