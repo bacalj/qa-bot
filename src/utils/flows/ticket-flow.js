@@ -8,7 +8,7 @@
  */
 import React from 'react';
 import FileUploadComponent from '../../components/FileUploadComponent';
-import { buildServiceDeskUrl, prepareApiSubmission } from '../bot-utils';
+import { buildServiceDeskUrl, prepareApiSubmission, sendApiSubmission } from '../bot-utils';
 
 export const createTicketFlow = ({ ticketForm = {}, setTicketForm = () => {} }) => {
   // Store the FileUploadComponent JSX in a variable for better readability
@@ -185,7 +185,8 @@ export const createTicketFlow = ({ ticketForm = {}, setTicketForm = () => {} }) 
             'loginAccess',
             ticketForm.uploadedFiles || []
           );
-          console.log("API submission data:", apiData);
+          console.log("| 🌎 API submission data:", apiData);
+          sendApiSubmission(apiData);
         }
       },
       path: "start"
@@ -440,6 +441,7 @@ export const createTicketFlow = ({ ticketForm = {}, setTicketForm = () => {} }) 
             ticketForm.uploadedFiles || []
           );
           console.log("API submission data:", apiData);
+          sendApiSubmission(apiData);
         }
       },
       path: "start"

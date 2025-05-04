@@ -106,6 +106,83 @@ export const prepareApiSubmission = (formData, ticketType = 'support', uploadedF
   return submissionData;
 };
 
+export const sendApiSubmission = async (apiData) => {
+  console.log('| 🌎 Sending API submission:', apiData);
+
+  // Get environment variables for API configuration - defaulting to the test environment
+  const apiKey = process.env.REACT_APP_JIRA_API_KEY;
+  const email = process.env.REACT_APP_JIRA_API_EMAIL || 'bacalj@gmail.com';
+  const serviceDeskId = process.env.REACT_APP_JIRA_SERVICE_DESK_ID || '1';
+  const apiUrl = process.env.REACT_APP_JIRA_API_URL || 'https://digitalblockarea.atlassian.net';
+
+  // Create request endpoint for creating a service request
+  const apiEndpoint = `${apiUrl}/rest/servicedeskapi/request`;
+
+  console.log('| 🌎 API endpoint:', apiEndpoint);
+  console.log('| 🌎 Service desk ID:', serviceDeskId);
+
+  try {
+    // Basic auth requires encoding email:apiKey in base64
+    const auth = btoa(`${email}:${apiKey}`);
+
+    const response = await fetch(apiEndpoint, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Basic ${auth}`,
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify(apiData)
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error('| ❌ API submission failed:', response.status, errorText);
+      return {
+        success: false,
+        status: response.status,
+        error: errorText
+      };
+    }
+
+    const data = await response.json();
+    console.log('| ✅ API submission successful:', data);
+    return {
+      success: true,
+      data
+    };
+  } catch (error) {
+    console.error('| ❌ API submission exception:', error);
+    return {
+      success: false,
+      error: error.message
+    };
+  }
+};
+
+/**
+ * Creates a test request to verify Jira Service Desk API integration
+ * @param {string} summary Short summary of the test request
+ * @param {string} description Detailed description of the test request
+ * @returns {Promise<Object>} API response
+ */
+export const createTestServiceRequest = async (summary = 'API Test Request', description = 'This is a test request created via API') => {
+  // Create test ticket data
+  const testData = {
+    serviceDeskId: process.env.REACT_APP_JIRA_SERVICE_DESK_ID || 1,
+    requestTypeId: 10006, // Test ticket type ID for digitalblockarea
+    requestFieldValues: {
+      summary: summary,
+      description: description
+    }
+  };
+
+  console.log('| 🧪 Creating test service request with data:', testData);
+
+  // Send the test request
+  return await sendApiSubmission(testData);
+};
+
 /**
  * JIRA Service Desk File Upload API Process Documentation
  *
