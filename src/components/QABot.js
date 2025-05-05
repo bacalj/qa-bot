@@ -19,16 +19,13 @@ const QABot = (props) => {
   const onClose = props.onClose;
   const apiKey = props.apiKey || process.env.REACT_APP_API_KEY;
 
-  // local react state
   const containerRef = useRef(null);
   const [ticketForm, setTicketForm] = useState({});
   const [feedbackForm, setFeedbackForm] = useState({});
 
-  // Custom hooks
   const { fetchAndStreamResponse } = useQueryHandler(apiKey);
   const getThemeColors = useThemeHandler(containerRef, embedded);
 
-  // Create flow configuration with memoization
   const flow = useMemo(() => {
     return createBotFlow({
       fetchAndStreamResponse,
@@ -40,7 +37,6 @@ const QABot = (props) => {
     });
   }, [fetchAndStreamResponse, welcome, ticketForm, setTicketForm, feedbackForm, setFeedbackForm]);
 
-  // Create settings for ChatBot with memoization
   const settings = useMemo(() => {
     return createChatBotSettings({
       getThemeColors,

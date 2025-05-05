@@ -107,19 +107,18 @@ export const prepareApiSubmission = (formData, ticketType = 'support', uploadedF
 };
 
 export const sendApiSubmission = async (apiData) => {
-  console.log('| 🌎 Sending API submission:', apiData);
+  console.log('| 🫡 SOY sendApiSubmission:', apiData);
 
-  // Get environment variables for API configuration - defaulting to the test environment
   const apiKey = process.env.REACT_APP_JIRA_API_KEY;
-  const email = process.env.REACT_APP_JIRA_API_EMAIL || 'bacalj@gmail.com';
-  const serviceDeskId = process.env.REACT_APP_JIRA_SERVICE_DESK_ID || '1';
-  const apiUrl = process.env.REACT_APP_JIRA_API_URL || 'https://digitalblockarea.atlassian.net';
+  const email = process.env.REACT_APP_JIRA_API_EMAIL;
+  const serviceDeskId = process.env.REACT_APP_JIRA_SERVICE_DESK_ID;
+  const apiUrl = process.env.REACT_APP_JIRA_API_URL;
 
   // Create request endpoint for creating a service request
   const apiEndpoint = `${apiUrl}/rest/servicedeskapi/request`;
 
-  console.log('| 🌎 API endpoint:', apiEndpoint);
-  console.log('| 🌎 Service desk ID:', serviceDeskId);
+  console.log('| ... API endpoint:', apiEndpoint);
+  console.log('| ... Service desk ID:', serviceDeskId);
 
   try {
     // Basic auth requires encoding email:apiKey in base64
@@ -158,160 +157,6 @@ export const sendApiSubmission = async (apiData) => {
       error: error.message
     };
   }
-};
-
-/**
- * Creates a test request to verify Jira Service Desk API integration
- * @param {string} summary Short summary of the test request
- * @param {string} description Detailed description of the test request
- * @returns {Promise<Object>} API response
- */
-export const createTestServiceRequest = async (summary = 'API Test Request', description = 'This is a test request created via API') => {
-  // Create test ticket data
-  const testData = {
-    serviceDeskId: process.env.REACT_APP_JIRA_SERVICE_DESK_ID || 1,
-    requestTypeId: 10006, // Test ticket type ID for digitalblockarea
-    requestFieldValues: {
-      summary: summary,
-      description: description
-    }
-  };
-
-  console.log('| 🧪 Creating test service request with data:', testData);
-
-  // Send the test request
-  return await sendApiSubmission(testData);
-};
-
-/**
- * JIRA Service Desk File Upload API Process Documentation
- *
- * File uploads to Jira Service Desk API are a two-step process:
- *
- * STEP 1: Upload Temporary File
- * POST /rest/servicedeskapi/servicedesk/{serviceDeskId}/attachTemporaryFile
- *
- * - Must be sent as multipart/form-data
- * - Include file in form field named "file"
- * - Required headers:
- *   - X-Atlassian-Token: nocheck
- *   - X-ExperimentalApi: opt-in
- *
- * Response will include a temporary attachment ID:
- * {
- *   "temporaryAttachments": [
- *     {
- *       "temporaryAttachmentId": "5ad41f7b-882a-4f12-8a08-9b401d6dd3bf",
- *       "fileName": "example.jpg"
- *     }
- *   ]
- * }
- *
- * STEP 2: Attach to Request
- * POST /rest/servicedeskapi/request/{issueIdOrKey}/attachment
- *
- * - Content-Type: application/json
- * - Body:
- * {
- *   "public": true,
- *   "temporaryAttachmentIds": ["5ad41f7b-882a-4f12-8a08-9b401d6dd3bf"],
- *   "additionalComment": { "body": "Adding an attachment" }
- * }
- *
- * Implementation Notes:
- * When API access is granted, we'll need to:
- * 1. Upload each file to get temporary attachment IDs
- * 2. Create the request/ticket
- * 3. Attach the temporary files to the created request
- */
-
-/**
- * Uploads a temporary file to Jira Service Desk
- * Note: This function is not currently used and is in place for future implementation
- *
- * @param {File} file File to upload
- * @param {string} apiKey API key for authentication
- * @param {string} serviceDeskId Service desk ID (default: 2)
- * @returns {Promise<string>} Temporary attachment ID
- */
-export const uploadTemporaryFile = async (file, apiKey, serviceDeskId = 2) => {
-  // This function will be implemented when API access is granted
-  // For now, it's a placeholder to show the pattern
-  console.log('Placeholder for uploadTemporaryFile:', { file, apiKey, serviceDeskId });
-
-  // Example implementation for future reference
-  /*
-  const formData = new FormData();
-  formData.append('file', file);
-
-  const response = await fetch(
-    `${CONSTANTS.serviceFormBaseUrl}/rest/servicedeskapi/servicedesk/${serviceDeskId}/attachTemporaryFile`,
-    {
-      method: 'POST',
-      headers: {
-        'X-Atlassian-Token': 'nocheck',
-        'X-ExperimentalApi': 'opt-in',
-        'X-API-KEY': apiKey
-      },
-      body: formData
-    }
-  );
-
-  if (!response.ok) {
-    throw new Error(`HTTP error! Status: ${response.status}`);
-  }
-
-  const data = await response.json();
-  return data.temporaryAttachments[0].temporaryAttachmentId;
-  */
-
-  // Mock response
-  return 'mock-temporary-id-' + Math.random().toString(36).substring(2);
-};
-
-/**
- * Attaches temporary files to a Jira Service Desk request
- * Note: This function is not currently used and is in place for future implementation
- *
- * @param {string[]} temporaryAttachmentIds Array of temporary attachment IDs
- * @param {string} issueKey The issue key or ID
- * @param {string} apiKey API key for authentication
- * @param {string} comment Optional comment to include with the attachment
- * @returns {Promise<Object>} Attachment data
- */
-export const attachTemporaryFilesToRequest = async (temporaryAttachmentIds, issueKey, apiKey, comment = '') => {
-  // This function will be implemented when API access is granted
-  // For now, it's a placeholder to show the pattern
-  console.log('Placeholder for attachTemporaryFilesToRequest:', { temporaryAttachmentIds, issueKey, apiKey, comment });
-
-  // Example implementation for future reference
-  /*
-  const response = await fetch(
-    `${CONSTANTS.serviceFormBaseUrl}/rest/servicedeskapi/request/${issueKey}/attachment`,
-    {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-ExperimentalApi': 'opt-in',
-        'X-API-KEY': apiKey
-      },
-      body: JSON.stringify({
-        public: true,
-        temporaryAttachmentIds,
-        additionalComment: comment ? { body: comment } : undefined
-      })
-    }
-  );
-
-  if (!response.ok) {
-    throw new Error(`HTTP error! Status: ${response.status}`);
-  }
-
-  return response.json();
-  */
-
-  // Mock response
-  return { success: true, message: 'Attachments added successfully (mock)' };
 };
 
 /**

@@ -11,7 +11,6 @@ import FileUploadComponent from '../../components/FileUploadComponent';
 import { buildServiceDeskUrl, prepareApiSubmission, sendApiSubmission } from '../bot-utils';
 
 export const createTicketFlow = ({ ticketForm = {}, setTicketForm = () => {} }) => {
-  // Store the FileUploadComponent JSX in a variable for better readability
   const fileUploadElement = (
     <FileUploadComponent
       onFileUpload={(files) =>
@@ -98,8 +97,11 @@ export const createTicketFlow = ({ ticketForm = {}, setTicketForm = () => {} }) 
     access_login_name: {
       message: "What is your name?",
       function: (chatState) => setTicketForm({...ticketForm, name: chatState.userInput}),
-      path: "access_login_accessid"
+      // path: "access_login_accessid" -- TEMPORARY FOR DEV
+      path: "access_login_summary" // -- TEMPORARY FOR DEV
     },
+    /*
+    TEMPORARY COMMENT OUT FOR DEV
     access_login_accessid: {
       message: "What is your ACCESS ID?",
       function: (chatState) => setTicketForm({...ticketForm, accessid: chatState.userInput}),
@@ -137,6 +139,7 @@ export const createTicketFlow = ({ ticketForm = {}, setTicketForm = () => {} }) 
       function: () => setTicketForm({...ticketForm, uploadConfirmed: true}),
       path: "access_login_summary"
     },
+    */
     access_login_summary: {
       message: () => {
         let fileInfo = '';
@@ -170,14 +173,14 @@ export const createTicketFlow = ({ ticketForm = {}, setTicketForm = () => {} }) 
           };
 
           // Build the URL
-          const url = buildServiceDeskUrl(formData, 'loginAccess');
+          // const url = buildServiceDeskUrl(formData, 'loginAccess');
 
           // Log for debugging
           console.log("Form submission:", formData);
-          console.log("Generated URL:", url);
+          //console.log("Generated URL:", url);
 
           // Open in new tab
-          window.open(url, '_blank');
+          // window.open(url, '_blank');
 
           // Also prepare API submission data for future implementation
           const apiData = prepareApiSubmission(
