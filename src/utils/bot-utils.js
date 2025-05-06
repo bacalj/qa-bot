@@ -5,6 +5,7 @@ export const CONSTANTS = {
   avatarUrl: 'https://support.access-ci.org/themes/contrib/asp-theme/images/icons/ACCESS-arrrow.svg',
   aboutToolUrl: 'https://support.access-ci.org/tools/access-qa-tool',
   feedbackUrl: 'https://docs.google.com/forms/d/e/1FAIpQLSeWnE1r738GU1u_ri3TRpw9dItn6JNPi7-FH7QFB9bAHSVN0w/viewform',
+  proxyBaseUrl: process.env.REACT_APP_NETLIFY_PROXY_BASE_URL || 'https://access-serverless-api.netlify.app/.netlify/functions/',
 
   // Text content
   aboutToolText: 'about this tool',
@@ -37,32 +38,6 @@ export const DEFAULTS = {
 };
 
 /**
- * Builds a Jira Service Desk URL based on form data
- * @param {Object} formData Form data for the ticket
- * @param {string} ticketType Type of ticket to create (default: support)
- * @returns {string} Complete URL for form submission
- */
-export const buildServiceDeskUrl = (formData, ticketType = 'support') => {
-  // Map ticket types to their URL segments from CONSTANTS
-  const ticketSegments = {
-    support: CONSTANTS.supportTicketSegment,
-    loginAccess: CONSTANTS.cantLoginAccessSegment,
-    loginProvider: CONSTANTS.cantLoginResourceProviderSegment,
-    feedback: CONSTANTS.feedbackSegment
-  };
-
-  const segment = ticketSegments[ticketType] || ticketSegments.support;
-
-  // Build query params from form data
-  const params = new URLSearchParams();
-  Object.entries(formData).forEach(([key, value]) => {
-    if (value) params.append(key, value);
-  });
-
-  return `${CONSTANTS.serviceFormBaseUrl}${segment}?${params.toString()}`;
-};
-
-/**
  * Prepares data for future API submission
  * @param {Object} formData Form data for the ticket
  * @param {string} ticketType Type of ticket to create
@@ -70,6 +45,7 @@ export const buildServiceDeskUrl = (formData, ticketType = 'support') => {
  * @returns {Object} Formatted data for API submission
  */
 export const prepareApiSubmission = (formData, ticketType = 'support', uploadedFiles = []) => {
+  console.log("| 2 🌎 prepareApiSubmission preparing data...");
   // Map ticket types to their requestTypeId values
   const requestTypeIds = {
     support: 17,
@@ -102,41 +78,26 @@ export const prepareApiSubmission = (formData, ticketType = 'support', uploadedF
       }
     }));
   }
-
   return submissionData;
 };
 
-export const sendApiSubmission = async (apiData) => {
-  console.log('| 🫡 SOY sendApiSubmission:', apiData);
-
-  const apiKey = process.env.REACT_APP_JIRA_API_KEY;
-  const email = process.env.REACT_APP_JIRA_API_EMAIL;
-  const serviceDeskId = process.env.REACT_APP_JIRA_SERVICE_DESK_ID;
-  const apiUrl = process.env.REACT_APP_JIRA_API_URL;
-
-  // Create request endpoint for creating a service request
-  const apiEndpoint = `${apiUrl}/rest/servicedeskapi/request`;
-
-  console.log('| ... API endpoint:', apiEndpoint);
-  console.log('| ... Service desk ID:', serviceDeskId);
+export const sendPreparedDataToProxy = async (submissionData) => {
+  console.log("| 4 🌎 Sending prepared data to proxy:", submissionData);
 
   try {
-    // Basic auth requires encoding email:apiKey in base64
-    const auth = btoa(`${email}:${apiKey}`);
+    const proxyEndpoint = `${CONSTANTS.proxyBaseUrl}test-create-one`;
 
-    const response = await fetch(apiEndpoint, {
+    const response = await fetch(proxyEndpoint, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Basic ${auth}`,
-        'Accept': 'application/json'
       },
-      body: JSON.stringify(apiData)
+      body: JSON.stringify(submissionData)
     });
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error('| ❌ API submission failed:', response.status, errorText);
+      console.error('| ❌ Post data to proxy failed:', response.status, errorText);
       return {
         success: false,
         status: response.status,
@@ -145,13 +106,13 @@ export const sendApiSubmission = async (apiData) => {
     }
 
     const data = await response.json();
-    console.log('| ✅ API submission successful:', data);
+    console.log('| ✅ Post data to proxy successful:', data);
     return {
       success: true,
       data
     };
   } catch (error) {
-    console.error('| ❌ API submission exception:', error);
+    console.error('| ❌ Post data to proxy exception:', error);
     return {
       success: false,
       error: error.message

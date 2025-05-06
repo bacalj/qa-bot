@@ -23,7 +23,6 @@ export const createBotFlow = ({
   feedbackForm = {},
   setFeedbackForm = () => {}
 }) => {
-  // Create individual flows
   const mainMenuFlow = createMainMenuFlow({
     welcome,
     setTicketForm,
@@ -44,7 +43,6 @@ export const createBotFlow = ({
     setFeedbackForm
   });
 
-  // Combine all flows with simple spread
   const flow = {
     ...mainMenuFlow,
     ...qaFlow,

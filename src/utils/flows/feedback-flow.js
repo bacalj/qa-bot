@@ -1,6 +1,6 @@
 import React from 'react';
 import FileUploadComponent from '../../components/FileUploadComponent';
-import { buildServiceDeskUrl, prepareApiSubmission } from '../bot-utils';
+import { prepareApiSubmission } from '../bot-utils';
 
 /**
  * Creates the feedback conversation flow
@@ -101,23 +101,13 @@ export const createFeedbackFlow = ({
             customfield_10108: feedbackForm.name || ""
           };
 
-          // Build the URL
-          const url = buildServiceDeskUrl(formData, 'support');
-
-          // Log for debugging
-          console.log("Form submission:", formData);
-          console.log("Generated URL:", url);
-
-          // Open in new tab
-          window.open(url, '_blank');
-
           // Also prepare API data for future use
           const apiData = prepareApiSubmission(
             formData,
             'support',
             feedbackForm.uploadedFiles || []
           );
-          console.log("API submission data:", apiData);
+          console.log("| 🌎 API submission data:", apiData);
         }
       },
       path: "start"
