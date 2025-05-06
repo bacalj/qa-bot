@@ -8,7 +8,7 @@
  */
 import React from 'react';
 import FileUploadComponent from '../../components/FileUploadComponent';
-import { buildServiceDeskUrl, prepareApiSubmission, sendApiSubmission } from '../bot-utils';
+import { prepareApiSubmission, sendPreparedDataToProxy } from '../bot-utils';
 
 export const createTicketFlow = ({ ticketForm = {}, setTicketForm = () => {} }) => {
   const fileUploadElement = (
@@ -46,7 +46,7 @@ export const createTicketFlow = ({ ticketForm = {}, setTicketForm = () => {} }) 
       }
     },
 
-    // ACCESS Login Help Path
+    // PATH: ACCESS Login Help Path
     access_help: {
       message: "If you're having trouble logging into the ACCESS website, here are some common issues:\n\n" +
                "• Make sure you're using a supported browser (Chrome, Firefox, Safari)\n" +
@@ -61,7 +61,7 @@ export const createTicketFlow = ({ ticketForm = {}, setTicketForm = () => {} }) 
           : "start"
     },
 
-    // Affiliated/Resource Provider Login Help Path
+    // PATH: Affiliated/Resource Provider Login Help Path
     affiliated_help: {
       message: "If you're having trouble logging into an affiliated infrastructure or resource provider, here are some common issues:\n\n" +
                "• Ensure your allocation is active\n" +
@@ -76,7 +76,7 @@ export const createTicketFlow = ({ ticketForm = {}, setTicketForm = () => {} }) 
           : "start"
     },
 
-    // General Help Ticket Path
+    // PATH: General Help Ticket Path
     general_help: {
       message: "I can help you create a general support ticket for any ACCESS-related questions or issues.\n\n" +
                "Would you like to submit a general help ticket?",
@@ -88,7 +88,7 @@ export const createTicketFlow = ({ ticketForm = {}, setTicketForm = () => {} }) 
           : "start"
     },
 
-    // ACCESS Login Form Flow
+    // FORM flow - Access Login Form
     access_login_email: {
       message: "What is your email?",
       function: (chatState) => setTicketForm({...ticketForm, email: chatState.userInput}),
@@ -97,11 +97,8 @@ export const createTicketFlow = ({ ticketForm = {}, setTicketForm = () => {} }) 
     access_login_name: {
       message: "What is your name?",
       function: (chatState) => setTicketForm({...ticketForm, name: chatState.userInput}),
-      // path: "access_login_accessid" -- TEMPORARY FOR DEV
-      path: "access_login_summary" // -- TEMPORARY FOR DEV
+      path: "access_login_accessid"
     },
-    /*
-    TEMPORARY COMMENT OUT FOR DEV
     access_login_accessid: {
       message: "What is your ACCESS ID?",
       function: (chatState) => setTicketForm({...ticketForm, accessid: chatState.userInput}),
@@ -139,7 +136,6 @@ export const createTicketFlow = ({ ticketForm = {}, setTicketForm = () => {} }) 
       function: () => setTicketForm({...ticketForm, uploadConfirmed: true}),
       path: "access_login_summary"
     },
-    */
     access_login_summary: {
       message: () => {
         let fileInfo = '';
@@ -172,30 +168,29 @@ export const createTicketFlow = ({ ticketForm = {}, setTicketForm = () => {} }) 
             browser: ticketForm.browser || ""
           };
 
-          // Build the URL
-          // const url = buildServiceDeskUrl(formData, 'loginAccess');
-
-          // Log for debugging
-          console.log("Form submission:", formData);
-          //console.log("Generated URL:", url);
-
-          // Open in new tab
-          // window.open(url, '_blank');
-
           // Also prepare API submission data for future implementation
           const apiData = prepareApiSubmission(
             formData,
             'loginAccess',
             ticketForm.uploadedFiles || []
           );
-          console.log("| 🌎 API submission data:", apiData);
-          sendApiSubmission(apiData);
+          console.log("| 🌎 API submission for access login:", apiData);
+
+          // Convert to async IIFE to handle awaiting the Promise
+          (async () => {
+            try {
+              const proxyResponse = await sendPreparedDataToProxy(apiData);
+              console.log("| 🌎 Access login proxy response:", proxyResponse);
+            } catch (error) {
+              console.error("| ❌ Error sending access login data to proxy:", error);
+            }
+          })();
         }
       },
       path: "start"
     },
 
-    // Affiliated/Resource Provider Login Form Flow
+    // FORM flow - Affiliated/Resource Login
     affiliated_login_email: {
       message: "What is your email?",
       function: (chatState) => setTicketForm({...ticketForm, email: chatState.userInput}),
@@ -275,34 +270,36 @@ export const createTicketFlow = ({ ticketForm = {}, setTicketForm = () => {} }) 
             user_id_resource: ticketForm.userIdResource || ""
           };
 
-          // Build the URL
-          const url = buildServiceDeskUrl(formData, 'loginProvider');
-
-          // Log for debugging
-          console.log("Form submission:", formData);
-          console.log("Generated URL:", url);
-
-          // Open in new tab
-          window.open(url, '_blank');
-
           // Also prepare API submission data for future implementation
           const apiData = prepareApiSubmission(
             formData,
             'loginProvider',
             ticketForm.uploadedFiles || []
           );
-          console.log("API submission data:", apiData);
+          console.log("| 🌎 API submission data for affiliated login:", apiData);
+
+          // Convert to async IIFE to handle awaiting the Promise
+          (async () => {
+            try {
+              const proxyResponse = await sendPreparedDataToProxy(apiData);
+              console.log("| 🌎 Resource login proxy response:", proxyResponse);
+            } catch (error) {
+              console.error("| ❌ Error sending resource login data to proxy:", error);
+            }
+          })();
         }
       },
       path: "start"
     },
 
-    // General Help Ticket Form Flow
+    // FORM flow - General Help Ticket Form Flow
     general_help_email: {
       message: "What is your email address?",
       function: (chatState) => setTicketForm({...ticketForm, email: chatState.userInput}),
-      path: "general_help_accessid"
+      // path: "general_help_accessid"
+      path: "general_help_description" // TEMPORARY FOR DEV
     },
+    /* START TEMPORARY COMMENT OUT
     general_help_accessid: {
       message: "What is your ACCESS ID?",
       function: (chatState) => setTicketForm({...ticketForm, accessid: chatState.userInput}),
@@ -335,6 +332,7 @@ export const createTicketFlow = ({ ticketForm = {}, setTicketForm = () => {} }) 
       function: (chatState) => setTicketForm({...ticketForm, category: chatState.userInput}),
       path: "general_help_description"
     },
+    */
     general_help_description: {
       message: "Please provide significant details about your issue.",
       function: (chatState) => setTicketForm({...ticketForm, description: chatState.userInput}),
@@ -345,8 +343,10 @@ export const createTicketFlow = ({ ticketForm = {}, setTicketForm = () => {} }) 
       options: ["Lowest", "Low", "Medium", "High", "Highest"],
       chatDisabled: true,
       function: (chatState) => setTicketForm({...ticketForm, priority: chatState.userInput.toLowerCase()}),
-      path: "general_help_attachment"
+      // path: "general_help_attachment"
+      path: "general_help_ticket_summary" // TEMPORARY FOR DEV
     },
+    /* START TEMPORARY COMMENT OUT
     general_help_attachment: {
       message: "Would you like to attach a file to your ticket?",
       options: ["Yes", "No"],
@@ -392,6 +392,7 @@ export const createTicketFlow = ({ ticketForm = {}, setTicketForm = () => {} }) 
       function: (chatState) => setTicketForm({...ticketForm, keywords: chatState.userInput}),
       path: "general_help_ticket_summary"
     },
+    */ // END TEMPORARY COMMENT OUT
     general_help_ticket_summary: {
       message: () => {
         let fileInfo = '';
@@ -427,24 +428,24 @@ export const createTicketFlow = ({ ticketForm = {}, setTicketForm = () => {} }) 
             direct_ticket: ticketForm.keywords === "None of the above" ? "" : ticketForm.keywords || ""
           };
 
-          // Build the URL
-          const url = buildServiceDeskUrl(formData, 'support');
-
-          // Log for debugging
-          console.log("Form submission:", formData);
-          console.log("Generated URL:", url);
-
-          // Open in new tab
-          window.open(url, '_blank');
-
           // Also prepare API submission data for future implementation
+          console.log("| 1 🌎 Form data for general help ticket:", formData);
           const apiData = prepareApiSubmission(
             formData,
             'support',
             ticketForm.uploadedFiles || []
           );
-          console.log("API submission data:", apiData);
-          sendApiSubmission(apiData);
+          console.log("| 3 🌎 Prepared API submission for general help ticket:", apiData);
+
+          // Convert to async IIFE to handle awaiting the Promise
+          (async () => {
+            try {
+              const proxyResponse = await sendPreparedDataToProxy(apiData);
+              console.log("| 5 🌎 Proxy response:", proxyResponse);
+            } catch (error) {
+              console.error("| ❌ Error sending data to proxy:", error);
+            }
+          })();
         }
       },
       path: "start"
