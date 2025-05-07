@@ -90,7 +90,7 @@ export const createFeedbackFlow = ({
       },
       options: ["Submit Feedback", "Back to Main Menu"],
       chatDisabled: true,
-      function: (chatState) => {
+      function: async (chatState) => {
         if (chatState.userInput === "Submit Feedback") {
           // Prepare form data from feedback inputs
           const formData = {
@@ -101,13 +101,17 @@ export const createFeedbackFlow = ({
             customfield_10108: feedbackForm.name || ""
           };
 
-          // Also prepare API data for future use
-          const apiData = prepareApiSubmission(
-            formData,
-            'support',
-            feedbackForm.uploadedFiles || []
-          );
-          console.log("| 🌎 API submission data:", apiData);
+          try {
+            // Also prepare API data for future use
+            const apiData = await prepareApiSubmission(
+              formData,
+              'support',
+              feedbackForm.uploadedFiles || []
+            );
+            console.log("| 🌎 API submission data:", apiData);
+          } catch (error) {
+            console.error("| ❌ Error preparing feedback data:", error);
+          }
         }
       },
       path: "start"

@@ -134,14 +134,14 @@ export const createDevTicketFlow = ({ ticketForm = {}, setTicketForm = () => {} 
           accessId: ticketForm.accessId || ""
         };
 
-        // Prepare API submission data
-        const apiData = prepareApiSubmission(
-          formData,
-          'dev',
-          ticketForm.uploadedFiles || []
-        );
-
         try {
+          // Prepare API submission data - now awaiting the async function
+          const apiData = await prepareApiSubmission(
+            formData,
+            'dev',
+            ticketForm.uploadedFiles || []
+          );
+
           const proxyResponse = await sendPreparedDataToProxy(apiData, 'dev-create-support-ticket');
           console.log("| 🌎 Dev ticket proxy response:", proxyResponse.data.jsmResponse);
 
