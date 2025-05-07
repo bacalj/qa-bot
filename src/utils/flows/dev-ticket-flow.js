@@ -100,12 +100,12 @@ export const createDevTicketFlow = ({ ticketForm = {}, setTicketForm = () => {} 
       chatDisabled: true,
       function: (chatState) => {
         if (chatState.userInput === "Submit Ticket") {
-          // Prepare form data using JSM schema field IDs
+          // Prepare form data using semantic keys
           const formData = {
             summary: ticketForm.summary || "",
             description: ticketForm.description || "",
-            customfield_10124: ticketForm.email || "", // TODO: send semantic keys - see TODO in other repo
-            customfield_10091: ticketForm.accessId || "" // TODO: send semantic keys - see TODO in other repo
+            email: ticketForm.email || "",
+            accessId: ticketForm.accessId || ""
           };
 
           // Prepare API submission data
