@@ -120,16 +120,17 @@ export const createDevTicketFlow = ({ ticketForm = {}, setTicketForm = () => {} 
           (async () => {
             try {
               const proxyResponse = await sendPreparedDataToProxy(apiData, 'dev-create-support-ticket');
-              console.log("| 🌎 Dev ticket proxy response:", proxyResponse);
-              console.log("| ...put this in the chat, like visit your ticket here... (we have info on ticket in)", proxyResponse.data.jsmResponse);
-              // TODO pull the id from the response and construct a link like
-              // https://digitalblockarea.atlassian.net/servicedesk/customer/portal/1/TJ-14
+              console.log("| 🌎 Dev ticket proxy response:", proxyResponse.data.jsmResponse);
             } catch (error) {
               console.error("| ❌ Error sending dev ticket data to proxy:", error);
             }
           })();
         }
       },
+      // TODO: this should be a function of ...what? If the ticket comes back as created, we want to tell the user
+      // in the chat that it was successfull, and pull out proxyResponse.data.jsmResponse.createdDate.friendly
+      // and tell them in the chat:
+      // "A ticket for your issue, ${ticetForm.summary}, was created at ${proxyResponse.data.jsmResponse.createdDate.friendly}"
       path: "start"
     }
   };
