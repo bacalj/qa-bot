@@ -115,22 +115,60 @@ export const createDevTicketFlow = ({ ticketForm = {}, setTicketForm = () => {} 
             ticketForm.uploadedFiles || []
           );
           console.log("| 🌎 API submission data for dev ticket:", apiData);
-
-          // Convert to async IIFE to handle awaiting the Promise
-          (async () => {
-            try {
-              const proxyResponse = await sendPreparedDataToProxy(apiData, 'dev-create-support-ticket');
-              console.log("| 🌎 Dev ticket proxy response:", proxyResponse.data.jsmResponse);
-            } catch (error) {
-              console.error("| ❌ Error sending dev ticket data to proxy:", error);
-            }
-          })();
         }
       },
-      // TODO: this should be a function of ...what? If the ticket comes back as created, we want to tell the user
-      // in the chat that it was successfull, and pull out proxyResponse.data.jsmResponse.createdDate.friendly
-      // and tell them in the chat:
-      // "A ticket for your issue, ${ticetForm.summary}, was created at ${proxyResponse.data.jsmResponse.createdDate.friendly}"
+      path: (chatState) => {
+        if (chatState.userInput === "Submit Ticket") {
+          return "dev_ticket_submitting";
+        }
+        return "start";
+      }
+    },
+    dev_ticket_submitting: {
+      message: async (chatState) => {
+        // Prepare form data using semantic keys
+        const formData = {
+          summary: ticketForm.summary || "",
+          description: ticketForm.description || "",
+          email: ticketForm.email || "",
+          accessId: ticketForm.accessId || ""
+        };
+
+        // Prepare API submission data
+        const apiData = prepareApiSubmission(
+          formData,
+          'dev',
+          ticketForm.uploadedFiles || []
+        );
+
+        try {
+          const proxyResponse = await sendPreparedDataToProxy(apiData, 'dev-create-support-ticket');
+          console.log("| 🌎 Dev ticket proxy response:", proxyResponse.data.jsmResponse);
+
+          // Return success message with ticket details
+          return `A ticket for your issue, "${ticketForm.summary}", was created at ${proxyResponse.data.jsmResponse.createdDate.friendly}`;
+        } catch (error) {
+          console.error("| ❌ Error sending dev ticket data to proxy:", error);
+          return "Sorry, there was an error submitting your ticket. Please try again later.";
+        }
+      },
+      options: ["Back to Main Menu"],
+      chatDisabled: true,
+      path: "start"
+    },
+    dev_ticket_success: {
+      message: (chatState) => {
+        const response = chatState.ticketResponse;
+        return `A ticket for your issue, "${ticketForm.summary}", was created at ${response.createdDate.friendly}`;
+      },
+      options: ["Back to Main Menu"],
+      chatDisabled: true,
+      path: "start"
+    },
+    dev_ticket_error: {
+      message: "Sorry, there was an error submitting your ticket. Please try again later.",
+      options: ["Back to Main Menu"],
+      chatDisabled: true,
       path: "start"
     }
   };
