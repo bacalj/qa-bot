@@ -9,7 +9,6 @@
 import React from 'react';
 import FileUploadComponent from '../../components/FileUploadComponent';
 import { prepareApiSubmission, sendPreparedDataToProxy } from '../bot-utils';
-import { TICKET_FIELDS } from '../field-definitions';
 
 export const createDevTicketFlow = ({ ticketForm = {}, setTicketForm = () => {} }) => {
   const fileUploadElement = (
@@ -24,6 +23,28 @@ export const createDevTicketFlow = ({ ticketForm = {}, setTicketForm = () => {} 
   );
 
   return {
+    dev_ticket: {
+      message: "What type of development ticket would you like to create?",
+      options: [
+        "Bug Report",
+        "Feature Request",
+        "Other Development Issue"
+      ],
+      chatDisabled: true,
+      function: (chatState) => {
+        setTicketForm({...ticketForm, ticketType: chatState.userInput});
+      },
+      path: (chatState) => {
+        if (chatState.userInput === "Bug Report") {
+          return "dev_ticket_email";
+        } else if (chatState.userInput === "Feature Request") {
+          return "dev_ticket_email";
+        } else if (chatState.userInput === "Other Development Issue") {
+          return "dev_ticket_email";
+        }
+        return "dev_ticket";
+      }
+    },
     dev_ticket_email: {
       message: "What is your email?",
       function: (chatState) => setTicketForm({...ticketForm, email: chatState.userInput}),
@@ -31,7 +52,7 @@ export const createDevTicketFlow = ({ ticketForm = {}, setTicketForm = () => {} 
     },
     dev_ticket_accessid: {
       message: "What is your ACCESS ID?",
-      function: (chatState) => setTicketForm({...ticketForm, accessid: chatState.userInput}),
+      function: (chatState) => setTicketForm({...ticketForm, accessId: chatState.userInput}),
       path: "dev_ticket_summary"
     },
     dev_ticket_summary: {
@@ -51,7 +72,7 @@ export const createDevTicketFlow = ({ ticketForm = {}, setTicketForm = () => {} 
       function: (chatState) => setTicketForm({...ticketForm, wantsAttachment: chatState.userInput}),
       path: (chatState) => chatState.userInput === "Yes"
         ? "dev_ticket_upload"
-        : "dev_ticket_summary"
+        : "dev_ticket_grand_summary"
     },
     dev_ticket_upload: {
       message: "Please upload your file.",
@@ -59,9 +80,9 @@ export const createDevTicketFlow = ({ ticketForm = {}, setTicketForm = () => {} 
       options: ["Continue"],
       chatDisabled: true,
       function: () => setTicketForm({...ticketForm, uploadConfirmed: true}),
-      path: "dev_ticket_summary"
+      path: "dev_ticket_grand_summary"
     },
-    dev_ticket_summary: {
+    dev_ticket_grand_summary: {
       message: () => {
         let fileInfo = '';
         if (ticketForm.uploadedFiles && ticketForm.uploadedFiles.length > 0) {
@@ -70,7 +91,7 @@ export const createDevTicketFlow = ({ ticketForm = {}, setTicketForm = () => {} 
 
         return `Thank you for providing your issue details. Here's a summary:\n\n` +
                `Email: ${ticketForm.email || 'Not provided'}\n` +
-               `ACCESS ID: ${ticketForm.accessid || 'Not provided'}\n` +
+               `ACCESS ID: ${ticketForm.accessId || 'Not provided'}\n` +
                `Summary: ${ticketForm.summary || 'Not provided'}\n` +
                `Description: ${ticketForm.description || 'Not provided'}${fileInfo}\n\n` +
                `Would you like to submit this ticket?`;
@@ -79,12 +100,12 @@ export const createDevTicketFlow = ({ ticketForm = {}, setTicketForm = () => {} 
       chatDisabled: true,
       function: (chatState) => {
         if (chatState.userInput === "Submit Ticket") {
-          // Prepare form data
+          // Prepare form data using JSM schema field IDs
           const formData = {
-            email: ticketForm.email || "",
-            accessid: ticketForm.accessid || "",
             summary: ticketForm.summary || "",
-            description: ticketForm.description || ""
+            description: ticketForm.description || "",
+            customfield_10124: ticketForm.email || "", // TODO: send semantic keys - see TODO in other repo
+            customfield_10091: ticketForm.accessId || "" // TODO: send semantic keys - see TODO in other repo
           };
 
           // Prepare API submission data
@@ -100,6 +121,9 @@ export const createDevTicketFlow = ({ ticketForm = {}, setTicketForm = () => {} 
             try {
               const proxyResponse = await sendPreparedDataToProxy(apiData, 'dev-create-support-ticket');
               console.log("| 🌎 Dev ticket proxy response:", proxyResponse);
+              console.log("| ...put this in the chat, like visit your ticket here... (we have info on ticket in)", proxyResponse.data.jsmResponse);
+              // TODO pull the id from the response and construct a link like
+              // https://digitalblockarea.atlassian.net/servicedesk/customer/portal/1/TJ-14
             } catch (error) {
               console.error("| ❌ Error sending dev ticket data to proxy:", error);
             }

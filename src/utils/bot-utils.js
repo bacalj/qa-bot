@@ -40,12 +40,13 @@ export const prepareApiSubmission = (formData, ticketType = 'support', uploadedF
   const requestTypeIds = {
     support: 17,
     loginAccess: 30,
-    loginProvider: 31
+    loginProvider: 31,
+    dev: 10006  // Added dev ticket type
   };
 
   // Basic submission data
   const submissionData = {
-    serviceDeskId: 2,
+    serviceDeskId: ticketType === 'dev' ? 1 : 2,
     requestTypeId: requestTypeIds[ticketType] || requestTypeIds.support,
     requestFieldValues: {
       ...formData
@@ -73,11 +74,12 @@ export const prepareApiSubmission = (formData, ticketType = 'support', uploadedF
 
 /**
  * POSTs prepared data to the netlify proxy endpoint
- * @param {*} submissionData
- * @returns
+ * @param {Object} submissionData The data to send
+ * @param {string} endpointName The name of the endpoint to use
+ * @returns {Promise<Object>} The response from the proxy
  */
-export const sendPreparedDataToProxy = async (submissionData) => {
-  const proxyEndpoint = `${CONSTANTS.netlifyBaseUrl}${CONSTANTS.netlifyFunctionName}`;
+export const sendPreparedDataToProxy = async (submissionData, endpointName) => {
+  const proxyEndpoint = `${CONSTANTS.netlifyBaseUrl}${CONSTANTS.netlifyFunctionName}/${endpointName}`;
   console.log(`| 4 🌎 Sending prepared data (${proxyEndpoint}):`, submissionData);
 
   try {

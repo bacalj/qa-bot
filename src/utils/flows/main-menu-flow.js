@@ -36,7 +36,7 @@ export const createMainMenuFlow = ({
         } else if (chatState.userInput === "Open Dev Ticket") {
           // Reset form data
           setTicketForm({});
-          return "dev_ticket_email";
+          return "dev_ticket";
         }
         return "start";
       }
