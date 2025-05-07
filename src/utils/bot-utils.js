@@ -5,7 +5,8 @@ export const CONSTANTS = {
   avatarUrl: 'https://support.access-ci.org/themes/contrib/asp-theme/images/icons/ACCESS-arrrow.svg',
   aboutToolUrl: 'https://support.access-ci.org/tools/access-qa-tool',
   feedbackUrl: 'https://docs.google.com/forms/d/e/1FAIpQLSeWnE1r738GU1u_ri3TRpw9dItn6JNPi7-FH7QFB9bAHSVN0w/viewform',
-  proxyBaseUrl: process.env.REACT_APP_NETLIFY_PROXY_BASE_URL || 'https://access-serverless-api.netlify.app/.netlify/functions/',
+  netlifyBaseUrl: process.env.REACT_APP_NETLIFY_BASE_URL,
+  netlifyFunctionName: process.env.REACT_APP_NETLIFY_FUNCTION_NAME,
 
   // Text content
   aboutToolText: 'about this tool',
@@ -13,18 +14,7 @@ export const CONSTANTS = {
   headerTitleText: 'ACCESS Q&A Bot',
   disabledPlaceholderText: 'Please log in to ask questions.',
   tooltipText: 'Ask me about ACCESS! 😊',
-
-  // component strings for composing form link urls
-  serviceFormBaseUrl: "https://access-ci.atlassian.net/servicedesk/customer/portal",
-  supportTicketSegment: "/2/group/3/create/17",
-  cantLoginAccessSegment: "/2/create/30",
-  cantLoginResourceProviderSegment: "/2/create/31",
-  // TODO: I think we need a dedicated path for feedbackSegment
-  // As a workaround we route feedback data to corresponding fields
-  // in the standard support ticket form
-  feedbackSegment: "/2/group/3/create/17"
 };
-
 
 // Default props for the QA Bot
 export const DEFAULTS = {
@@ -81,12 +71,16 @@ export const prepareApiSubmission = (formData, ticketType = 'support', uploadedF
   return submissionData;
 };
 
+/**
+ * POSTs prepared data to the netlify proxy endpoint
+ * @param {*} submissionData
+ * @returns
+ */
 export const sendPreparedDataToProxy = async (submissionData) => {
-  console.log("| 4 🌎 Sending prepared data to proxy:", submissionData);
+  const proxyEndpoint = `${CONSTANTS.netlifyBaseUrl}${CONSTANTS.netlifyFunctionName}`;
+  console.log(`| 4 🌎 Sending prepared data (${proxyEndpoint}):`, submissionData);
 
   try {
-    const proxyEndpoint = `${CONSTANTS.proxyBaseUrl}test-create-one`;
-
     const response = await fetch(proxyEndpoint, {
       method: 'POST',
       headers: {

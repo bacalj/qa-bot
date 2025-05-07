@@ -179,7 +179,7 @@ export const createTicketFlow = ({ ticketForm = {}, setTicketForm = () => {} }) 
           // Convert to async IIFE to handle awaiting the Promise
           (async () => {
             try {
-              const proxyResponse = await sendPreparedDataToProxy(apiData);
+              const proxyResponse = await sendPreparedDataToProxy(apiData, 'create-access-login-ticket');
               console.log("| 🌎 Access login proxy response:", proxyResponse);
             } catch (error) {
               console.error("| ❌ Error sending access login data to proxy:", error);
@@ -281,7 +281,7 @@ export const createTicketFlow = ({ ticketForm = {}, setTicketForm = () => {} }) 
           // Convert to async IIFE to handle awaiting the Promise
           (async () => {
             try {
-              const proxyResponse = await sendPreparedDataToProxy(apiData);
+              const proxyResponse = await sendPreparedDataToProxy(apiData, 'create-affiliated-login-ticket');
               console.log("| 🌎 Resource login proxy response:", proxyResponse);
             } catch (error) {
               console.error("| ❌ Error sending resource login data to proxy:", error);
@@ -296,10 +296,8 @@ export const createTicketFlow = ({ ticketForm = {}, setTicketForm = () => {} }) 
     general_help_email: {
       message: "What is your email address?",
       function: (chatState) => setTicketForm({...ticketForm, email: chatState.userInput}),
-      // path: "general_help_accessid"
-      path: "general_help_description" // TEMPORARY FOR DEV
+      path: "general_help_accessid"
     },
-    /* START TEMPORARY COMMENT OUT
     general_help_accessid: {
       message: "What is your ACCESS ID?",
       function: (chatState) => setTicketForm({...ticketForm, accessid: chatState.userInput}),
@@ -332,7 +330,6 @@ export const createTicketFlow = ({ ticketForm = {}, setTicketForm = () => {} }) 
       function: (chatState) => setTicketForm({...ticketForm, category: chatState.userInput}),
       path: "general_help_description"
     },
-    */
     general_help_description: {
       message: "Please provide significant details about your issue.",
       function: (chatState) => setTicketForm({...ticketForm, description: chatState.userInput}),
@@ -343,10 +340,8 @@ export const createTicketFlow = ({ ticketForm = {}, setTicketForm = () => {} }) 
       options: ["Lowest", "Low", "Medium", "High", "Highest"],
       chatDisabled: true,
       function: (chatState) => setTicketForm({...ticketForm, priority: chatState.userInput.toLowerCase()}),
-      // path: "general_help_attachment"
-      path: "general_help_ticket_summary" // TEMPORARY FOR DEV
+      path: "general_help_attachment"
     },
-    /* START TEMPORARY COMMENT OUT
     general_help_attachment: {
       message: "Would you like to attach a file to your ticket?",
       options: ["Yes", "No"],
@@ -392,7 +387,6 @@ export const createTicketFlow = ({ ticketForm = {}, setTicketForm = () => {} }) 
       function: (chatState) => setTicketForm({...ticketForm, keywords: chatState.userInput}),
       path: "general_help_ticket_summary"
     },
-    */ // END TEMPORARY COMMENT OUT
     general_help_ticket_summary: {
       message: () => {
         let fileInfo = '';
@@ -440,7 +434,7 @@ export const createTicketFlow = ({ ticketForm = {}, setTicketForm = () => {} }) 
           // Convert to async IIFE to handle awaiting the Promise
           (async () => {
             try {
-              const proxyResponse = await sendPreparedDataToProxy(apiData);
+              const proxyResponse = await sendPreparedDataToProxy(apiData, 'dev-create-support-ticket');
               console.log("| 5 🌎 Proxy response:", proxyResponse);
             } catch (error) {
               console.error("| ❌ Error sending data to proxy:", error);
