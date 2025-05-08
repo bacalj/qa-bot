@@ -156,7 +156,7 @@ export const createTicketFlow = ({ ticketForm = {}, setTicketForm = () => {} }) 
       chatDisabled: true,
       function: async (chatState) => {
         if (chatState.userInput === "Submit Ticket") {
-          // Prepare form data
+          // OJO: we know how to do this better now, see dev example
           const formData = {
             email: ticketForm.email || "",
             customfield_10108: ticketForm.name || "",
