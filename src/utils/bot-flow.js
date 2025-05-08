@@ -2,6 +2,7 @@ import { createMainMenuFlow } from './flows/main-menu-flow';
 import { createQAFlow } from './flows/qa-flow';
 import { createTicketFlow } from './flows/ticket-flow';
 import { createFeedbackFlow } from './flows/feedback-flow';
+import { createDevTicketFlow } from './flows/dev-ticket-flow';
 
 /**
  * Defines the conversation flow for the QA Bot
@@ -43,11 +44,17 @@ export const createBotFlow = ({
     setFeedbackForm
   });
 
+  const devTicketFlow = createDevTicketFlow({
+    ticketForm,
+    setTicketForm
+  });
+
   const flow = {
     ...mainMenuFlow,
     ...qaFlow,
     ...ticketFlow,
-    ...feedbackFlow
+    ...feedbackFlow,
+    ...devTicketFlow
   };
 
   return flow;

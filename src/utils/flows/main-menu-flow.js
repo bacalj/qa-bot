@@ -18,7 +18,8 @@ export const createMainMenuFlow = ({
       options: [
         "Ask a question about ACCESS",
         "Open a Help Ticket",
-        "Provide feedback to ACCESS"
+        "Provide feedback to ACCESS",
+        "Open Dev Ticket"
       ],
       chatDisabled: true,
       path: (chatState) => {
@@ -32,6 +33,10 @@ export const createMainMenuFlow = ({
           // Reset form data
           setFeedbackForm({});
           return "feedback";
+        } else if (chatState.userInput === "Open Dev Ticket") {
+          // Reset form data
+          setTicketForm({});
+          return "dev_ticket";
         }
         return "start";
       }

@@ -154,9 +154,9 @@ export const createTicketFlow = ({ ticketForm = {}, setTicketForm = () => {} }) 
       },
       options: ["Submit Ticket", "Back to Main Menu"],
       chatDisabled: true,
-      function: (chatState) => {
+      function: async (chatState) => {
         if (chatState.userInput === "Submit Ticket") {
-          // Prepare form data
+          // OJO: we know how to do this better now, see dev example
           const formData = {
             email: ticketForm.email || "",
             customfield_10108: ticketForm.name || "",
@@ -169,22 +169,19 @@ export const createTicketFlow = ({ ticketForm = {}, setTicketForm = () => {} }) 
           };
 
           // Also prepare API submission data for future implementation
-          const apiData = prepareApiSubmission(
+          const apiData = await prepareApiSubmission(
             formData,
             'loginAccess',
             ticketForm.uploadedFiles || []
           );
           console.log("| 🌎 API submission for access login:", apiData);
 
-          // Convert to async IIFE to handle awaiting the Promise
-          (async () => {
-            try {
-              const proxyResponse = await sendPreparedDataToProxy(apiData, 'create-access-login-ticket');
-              console.log("| 🌎 Access login proxy response:", proxyResponse);
-            } catch (error) {
-              console.error("| ❌ Error sending access login data to proxy:", error);
-            }
-          })();
+          try {
+            const proxyResponse = await sendPreparedDataToProxy(apiData, 'create-access-login-ticket');
+            console.log("| 🌎 Access login proxy response:", proxyResponse);
+          } catch (error) {
+            console.error("| ❌ Error sending access login data to proxy:", error);
+          }
         }
       },
       path: "start"
@@ -256,7 +253,7 @@ export const createTicketFlow = ({ ticketForm = {}, setTicketForm = () => {} }) 
       },
       options: ["Submit Ticket", "Back to Main Menu"],
       chatDisabled: true,
-      function: (chatState) => {
+      function: async (chatState) => {
         if (chatState.userInput === "Submit Ticket") {
           // Prepare form data
           const formData = {
@@ -271,22 +268,19 @@ export const createTicketFlow = ({ ticketForm = {}, setTicketForm = () => {} }) 
           };
 
           // Also prepare API submission data for future implementation
-          const apiData = prepareApiSubmission(
+          const apiData = await prepareApiSubmission(
             formData,
             'loginProvider',
             ticketForm.uploadedFiles || []
           );
           console.log("| 🌎 API submission data for affiliated login:", apiData);
 
-          // Convert to async IIFE to handle awaiting the Promise
-          (async () => {
-            try {
-              const proxyResponse = await sendPreparedDataToProxy(apiData, 'create-affiliated-login-ticket');
-              console.log("| 🌎 Resource login proxy response:", proxyResponse);
-            } catch (error) {
-              console.error("| ❌ Error sending resource login data to proxy:", error);
-            }
-          })();
+          try {
+            const proxyResponse = await sendPreparedDataToProxy(apiData, 'create-affiliated-login-ticket');
+            console.log("| 🌎 Resource login proxy response:", proxyResponse);
+          } catch (error) {
+            console.error("| ❌ Error sending resource login data to proxy:", error);
+          }
         }
       },
       path: "start"

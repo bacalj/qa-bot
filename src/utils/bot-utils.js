@@ -32,20 +32,21 @@ export const DEFAULTS = {
  * @param {Object} formData Form data for the ticket
  * @param {string} ticketType Type of ticket to create
  * @param {Array} uploadedFiles Files uploaded by the user (if any)
- * @returns {Object} Formatted data for API submission
+ * @returns {Promise<Object>} Formatted data for API submission
  */
-export const prepareApiSubmission = (formData, ticketType = 'support', uploadedFiles = []) => {
+export const prepareApiSubmission = async (formData, ticketType = 'support', uploadedFiles = []) => {
   console.log("| 2 🌎 prepareApiSubmission preparing data...");
   // Map ticket types to their requestTypeId values
   const requestTypeIds = {
     support: 17,
     loginAccess: 30,
-    loginProvider: 31
+    loginProvider: 31,
+    dev: 10006  // Added dev ticket type
   };
 
   // Basic submission data
   const submissionData = {
-    serviceDeskId: 2,
+    serviceDeskId: ticketType === 'dev' ? 1 : 2,
     requestTypeId: requestTypeIds[ticketType] || requestTypeIds.support,
     requestFieldValues: {
       ...formData
@@ -54,30 +55,40 @@ export const prepareApiSubmission = (formData, ticketType = 'support', uploadedF
 
   // Add file information if any files were uploaded
   if (uploadedFiles && uploadedFiles.length > 0) {
-    submissionData.attachments = uploadedFiles.map(file => ({
-      fileName: file.name,
-      contentType: file.type,
-      size: file.size,
-      // We would handle the actual file data when we implement the API
-      // This is just for demonstration/testing
-      fileData: {
-        name: file.name,
-        type: file.type,
-        size: file.size,
-        lastModified: file.lastModified
-      }
-    }));
+    // Process each file to convert to base64
+    const processedFiles = await Promise.all(
+      uploadedFiles.map(async (file) => {
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => {
+            // Get the base64 string by removing the data URL prefix
+            const base64String = reader.result.split(',')[1];
+            resolve({
+              fileName: file.name,
+              contentType: file.type,
+              size: file.size,
+              fileData: base64String
+            });
+          };
+          reader.onerror = () => reject(new Error(`Failed to read file ${file.name}`));
+          reader.readAsDataURL(file);
+        });
+      })
+    );
+
+    submissionData.attachments = processedFiles;
   }
   return submissionData;
 };
 
 /**
  * POSTs prepared data to the netlify proxy endpoint
- * @param {*} submissionData
- * @returns
+ * @param {Object} submissionData The data to send
+ * @param {string} endpointName The name of the endpoint to use
+ * @returns {Promise<Object>} The response from the proxy
  */
-export const sendPreparedDataToProxy = async (submissionData) => {
-  const proxyEndpoint = `${CONSTANTS.netlifyBaseUrl}${CONSTANTS.netlifyFunctionName}`;
+export const sendPreparedDataToProxy = async (submissionData, endpointName) => {
+  const proxyEndpoint = `${CONSTANTS.netlifyBaseUrl}${CONSTANTS.netlifyFunctionName}/${endpointName}`;
   console.log(`| 4 🌎 Sending prepared data (${proxyEndpoint}):`, submissionData);
 
   try {
