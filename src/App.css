@@ -51,17 +51,21 @@
 
 .file-upload-container {
   width: 100%;
-  margin: 10px 0;
+  margin: 16px 16px 8px 16px;
 }
 
 .file-upload-dropzone {
   border: 2px dashed #ccc;
   border-radius: 8px;
-  padding: 20px;
+  padding: 14px;
   background-color: #f8f8f8;
   text-align: center;
   cursor: pointer;
   transition: all 0.3s ease;
+  min-height: 80px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .file-upload-dropzone.active {
@@ -84,6 +88,8 @@
   width: 100%;
   margin-top: 10px;
   text-align: left;
+  max-height: 60px;
+  overflow-y: auto;
 }
 
 .selected-files ul {

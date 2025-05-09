@@ -66,20 +66,60 @@ export const createDevTicketFlow = ({ ticketForm = {}, setTicketForm = () => {} 
       path: "dev_ticket_attachment"
     },
     dev_ticket_attachment: {
-      message: "Would you like to attach a file?",
+      message: "Would you like to attach file(s)?",
       options: ["Yes", "No"],
       chatDisabled: true,
       function: (chatState) => setTicketForm({...ticketForm, wantsAttachment: chatState.userInput}),
       path: (chatState) => chatState.userInput === "Yes"
         ? "dev_ticket_upload"
-        : "dev_ticket_grand_summary"
+        : "dev_ticket_keywords"
     },
     dev_ticket_upload: {
-      message: "Please upload your file.",
+      message: "Please upload your file(s).",
       component: fileUploadElement,
       options: ["Continue"],
       chatDisabled: true,
       function: () => setTicketForm({...ticketForm, uploadConfirmed: true}),
+      path: "dev_ticket_keywords"
+    },
+    dev_ticket_keywords: {
+      message: "Please select up to 5 keywords that describe your issue. Click the 'Continue' button when done.",
+      checkboxes: { items: ["C, C++", "Abaqus", "Algorithms", "API", "Bash", "CloudLab", "Docker", "Hadoop", "Jupyter", "MatLab", "VPN", "XML", "Other"], min: 0, max: 5 },
+      chatDisabled: true,
+      function: (chatState) => setTicketForm({...ticketForm, keywords: chatState.userInput}),
+      path: (chatState) => {
+        if (chatState.userInput && chatState.userInput.includes("Other")) {
+          return "dev_ticket_additional_keywords";
+        } else {
+          return "dev_ticket_grand_summary";
+        }
+      }
+    },
+    dev_ticket_additional_keywords: {
+      message: "Please enter additional keywords, separated by commas:",
+      function: (chatState) => {
+        // Get the current keywords selected from checkboxes
+        const currentKeywords = ticketForm.keywords || [];
+        const additionalKeywords = chatState.userInput;
+
+        // Ensure we're working with arrays for consistency
+        const keywordsArray = Array.isArray(currentKeywords)
+          ? [...currentKeywords]
+          : currentKeywords.split(',').map(k => k.trim());
+
+        // Filter out "Other" from the keywords
+        const filteredKeywords = keywordsArray.filter(k => k !== "Other");
+
+        // Add the additional keywords
+        const formattedKeywords = Array.isArray(filteredKeywords) && filteredKeywords.length > 0
+          ? [...filteredKeywords, additionalKeywords].join(", ")
+          : additionalKeywords;
+
+        setTicketForm({
+          ...ticketForm,
+          keywords: formattedKeywords
+        });
+      },
       path: "dev_ticket_grand_summary"
     },
     dev_ticket_grand_summary: {
@@ -93,6 +133,7 @@ export const createDevTicketFlow = ({ ticketForm = {}, setTicketForm = () => {} 
                `Email: ${ticketForm.email || 'Not provided'}\n` +
                `ACCESS ID: ${ticketForm.accessId || 'Not provided'}\n` +
                `Summary: ${ticketForm.summary || 'Not provided'}\n` +
+               `Keywords: ${ticketForm.keywords || 'Not provided'}\n` +
                `Description: ${ticketForm.description || 'Not provided'}${fileInfo}\n\n` +
                `Would you like to submit this ticket?`;
       },
@@ -105,7 +146,8 @@ export const createDevTicketFlow = ({ ticketForm = {}, setTicketForm = () => {} 
             summary: ticketForm.summary || "",
             description: ticketForm.description || "",
             email: ticketForm.email || "",
-            accessId: ticketForm.accessId || ""
+            accessId: ticketForm.accessId || "",
+            keywords: ticketForm.keywords || ""
           };
 
           // Prepare API submission data
@@ -131,7 +173,8 @@ export const createDevTicketFlow = ({ ticketForm = {}, setTicketForm = () => {} 
           summary: ticketForm.summary || "",
           description: ticketForm.description || "",
           email: ticketForm.email || "",
-          accessId: ticketForm.accessId || ""
+          accessId: ticketForm.accessId || "",
+          keywords: ticketForm.keywords || ""
         };
 
         try {
