@@ -126,14 +126,19 @@ export const createAffiliatedLoginFlow = ({ ticketForm = {}, setTicketForm = () 
           );
           console.log("| 🌎 API submission data for affiliated login:", apiData);
 
-          try {
-            const proxyResponse = await sendPreparedDataToProxy(apiData, 'create-affiliated-login-ticket');
-            console.log("| 🌎 Resource login proxy response:", proxyResponse);
-          } catch (error) {
-            console.error("| ❌ Error sending resource login data to proxy:", error);
-          }
+          // NOTE: we are skipping the jira call for now for demo
+          // try {
+          //   const proxyResponse = await sendPreparedDataToProxy(apiData, 'create-affiliated-login-ticket');
+          //   console.log("| 🌎 Resource login proxy response:", proxyResponse);
+          // } catch (error) {
+          //   console.error("| ❌ Error sending resource login data to proxy:", error);
+          // }
         }
       },
+      path: "affiliated_login_success"
+    },
+    affiliated_login_success: {
+      message: "Thank you for submitting your ticket. We will follow up with you shortly.",
       path: "start"
     }
   };

@@ -169,11 +169,11 @@ export const createGeneralHelpFlow = ({ ticketForm = {}, setTicketForm = () => {
           );
           console.log("| 🌎 API submission data for general ticket:", apiData);
 
-          const proxyResponse = await sendPreparedDataToProxy(apiData, 'create-support-ticket');
-          console.log("| 🌎 General ticket proxy response:", proxyResponse.data.jsmResponse);
+          // const proxyResponse = await sendPreparedDataToProxy(apiData, 'create-support-ticket');
+          // console.log("| 🌎 General ticket proxy response:", proxyResponse.data.jsmResponse);
 
-          // Return success message with ticket details
-          return `A ticket for your issue, "${ticketForm.summary}", was created at ${proxyResponse.data.jsmResponse.createdDate.friendly}`;
+          // // Return success message with ticket details
+          // return `A ticket for your issue, "${ticketForm.summary}", was created at ${proxyResponse.data.jsmResponse.createdDate.friendly}`;
         } catch (error) {
           console.error("| ❌ Error sending general ticket data to proxy:", error);
           return "Sorry, there was an error submitting your ticket. Please try again later.";
@@ -181,6 +181,10 @@ export const createGeneralHelpFlow = ({ ticketForm = {}, setTicketForm = () => {
       },
       options: ["Back to Main Menu"],
       chatDisabled: true,
+      path: "general_help_success"
+    },
+    general_help_success: {
+      message: "Thank you for submitting your ticket. We will follow up with you shortly.",
       path: "start"
     }
   };

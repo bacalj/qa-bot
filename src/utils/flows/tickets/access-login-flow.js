@@ -126,14 +126,19 @@ export const createAccessLoginFlow = ({ ticketForm = {}, setTicketForm = () => {
           );
           console.log("| 🌎 API submission for access login:", apiData);
 
-          try {
-            const proxyResponse = await sendPreparedDataToProxy(apiData, 'create-access-login-ticket');
-            console.log("| 🌎 Access login proxy response:", proxyResponse);
-          } catch (error) {
-            console.error("| ❌ Error sending access login data to proxy:", error);
-          }
+          // NOTE: we are skipping the jira call for now
+          // try {
+          //   const proxyResponse = await sendPreparedDataToProxy(apiData, 'create-access-login-ticket');
+          //   console.log("| 🌎 Access login proxy response:", proxyResponse);
+          // } catch (error) {
+          //   console.error("| ❌ Error sending access login data to proxy:", error);
+          // }
         }
       },
+      path: "access_login_success"
+    },
+    access_login_success: {
+      message: "Thank you for submitting your ticket. We will follow up with you shortly.",
       path: "start"
     }
   };
