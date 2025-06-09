@@ -44,18 +44,7 @@ const QABot = React.forwardRef((props, ref) => {
 
   const flow = useMemo(() => {
     return createBotFlow(flowConfig);
-  }, [
-    flowConfig,
-    welcome,
-    isBotLoggedIn,
-    loginUrl,
-    handleQuery,
-    hasQueryError,
-    ticketForm,
-    setTicketForm,
-    feedbackForm,
-    setFeedbackForm
-  ]);
+  }, [flowConfig]);
 
   const settings = useChatBotSettings({
     themeColors,
