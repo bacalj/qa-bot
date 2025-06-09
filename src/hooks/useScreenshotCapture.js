@@ -23,9 +23,6 @@ const useScreenshotCapture = () => {
         audio: false
       });
 
-      // When a display is selected, capture an image
-      stream.getVideoTracks()[0];
-
       // Create video element to capture the frame
       const video = document.createElement('video');
       video.srcObject = stream;
