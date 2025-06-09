@@ -35,7 +35,7 @@ const useChatBotSettings = ({
       },
       chatInput: {
         enabledPlaceholderText: constants.PROMPT_TEXT,
-        disabledPlaceholderText: 'Please log in to ask questions.',
+        disabledPlaceholderText: '',
         disabled: false
       },
       chatHistory: {

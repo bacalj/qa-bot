@@ -10,7 +10,7 @@ import { handleBotError } from '../error-handler';
 export const createQAFlow = ({ fetchAndStreamResponse }) => {
   return {
     go_ahead_and_ask: {
-      message: "Great. Please type your question.",
+      message: "Please type your question.",
       path: "qa_loop"
     },
     qa_loop: {

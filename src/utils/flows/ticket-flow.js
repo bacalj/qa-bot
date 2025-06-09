@@ -77,16 +77,16 @@ export const createTicketFlow = ({ ticketForm = {}, setTicketForm = () => {} }) 
     },
 
     // PATH: General Help Ticket Path
-    general_help: {
-      message: "I can help you create a general support ticket for any ACCESS-related questions or issues.\n\n" +
-               "Would you like to submit a general help ticket?",
-      options: ["Submit General Help Ticket", "Back to Main Menu"],
-      chatDisabled: true,
-      path: (chatState) =>
-        chatState.userInput === "Submit General Help Ticket"
-          ? "general_help_email"
-          : "start"
-    },
+    // general_help: {
+    //   message: "I can help you create a general support ticket for any ACCESS-related questions or issues.\n\n" +
+    //            "Would you like to submit a general help ticket?",
+    //   options: ["Submit General Help Ticket", "Back to Main Menu"],
+    //   chatDisabled: true,
+    //   path: (chatState) =>
+    //     chatState.userInput === "Submit General Help Ticket"
+    //       ? "general_help_email"
+    //       : "start"
+    // },
 
     // FORM flow - Access Login Form
     access_login_email: {

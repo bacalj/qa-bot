@@ -1,10 +1,10 @@
 // Default configuration values for the QA Bot
 export const constants = {
   LOGIN_URL: '/login',
-  PROMPT_TEXT: 'Questions should stand alone and not refer to previous ones.',
-  WELCOME_MESSAGE: 'Hello! What can I help you with?',
+  PROMPT_TEXT: '',
+  WELCOME_MESSAGE: 'What can I help you with?',
   WELCOME_MESSAGE_LOGGED_OUT: 'To ask questions, please log in.',
-  WELCOME_MESSAGE_LOGIN_TRANSITION: 'Welcome! You are now logged in. How can I help you today?',
+  WELCOME_MESSAGE_LOGIN_TRANSITION: 'You are now logged in.',
   WELCOME_MESSAGE_LOGOUT_TRANSITION: 'You have been logged out.',
   API_ENDPOINT: 'https://access-ai.ccs.uky.edu/api/query',
 
@@ -22,7 +22,7 @@ export const constants = {
 
   // Chat bot UI defaults
   CHATBOT: {
-    TITLE: 'ACCESS Q&A Bot',
+    TITLE: 'Ask ACCESS',
     AVATAR_URL: 'https://support.access-ci.org/themes/contrib/asp-theme/images/icons/ACCESS-arrrow.svg',
     TOOLTIP_TEXT: 'Ask me about ACCESS! 😊'
   },

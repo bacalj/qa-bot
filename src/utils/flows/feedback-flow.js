@@ -119,7 +119,7 @@ export const createFeedbackFlow = ({
       path: "feedback_success"
     },
     feedback_success: {
-      message: "Thank you for your feedback! (this is not sent to the API yet)",
+      message: "Thank you for your feedback! If you provided your contact information, we will follow up with you shortly.",
       path: "start"
     }
   };
