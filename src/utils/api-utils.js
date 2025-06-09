@@ -51,6 +51,7 @@ export const prepareApiSubmission = async (formData, ticketType = 'support', upl
 
     submissionData.attachments = processedFiles;
   }
+  console.log("| 🌎 Submission data:", submissionData);
   return submissionData;
 };
 
@@ -61,7 +62,8 @@ export const prepareApiSubmission = async (formData, ticketType = 'support', upl
  * @returns {Promise<Object>} The response from the proxy
  */
 export const sendPreparedDataToProxy = async (submissionData, endpointName) => {
-  const proxyEndpoint = `${constants.netlifyBaseUrl}${constants.netlifyFunctionName}/${endpointName}`;
+  console.log("| 🌎 endpointName parameter:", endpointName);
+  const proxyEndpoint = `${constants.netlifyBaseUrl}${endpointName}`;
   console.log(`| 4 🌎 Sending prepared data (${proxyEndpoint}):`, submissionData);
 
   try {

@@ -252,7 +252,6 @@ const FileUploadComponent = ({ onFileUpload }) => {
                 <span
                   key={index}
                   style={{
-                    display: 'inline-block',
                     background: '#fff',
                     color: '#107180',
                     borderRadius: '5px',

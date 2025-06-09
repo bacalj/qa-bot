@@ -151,26 +151,6 @@ export const createDevTicketFlow = ({ ticketForm = {}, setTicketForm = () => {} 
       },
       options: ["Submit Ticket", "Back to Main Menu"],
       chatDisabled: true,
-      function: (chatState) => {
-        if (chatState.userInput === "Submit Ticket") {
-          // Prepare form data using semantic keys
-          const formData = {
-            summary: ticketForm.summary || "",
-            description: ticketForm.description || "",
-            email: ticketForm.email || "",
-            accessId: ticketForm.accessId || "",
-            keywords: ticketForm.keywords || ""
-          };
-
-          // Prepare API submission data
-          const apiData = prepareApiSubmission(
-            formData,
-            'dev',
-            ticketForm.uploadedFiles || []
-          );
-          console.log("| 🌎 API submission data for dev ticket:", apiData);
-        }
-      },
       path: (chatState) => {
         if (chatState.userInput === "Submit Ticket") {
           return "dev_ticket_submitting";
@@ -196,6 +176,7 @@ export const createDevTicketFlow = ({ ticketForm = {}, setTicketForm = () => {} 
             'dev',
             ticketForm.uploadedFiles || []
           );
+          console.log("| 🌎 API submission data for dev ticket:", apiData);
 
           const proxyResponse = await sendPreparedDataToProxy(apiData, 'dev-create-support-ticket');
           console.log("| 🌎 Dev ticket proxy response:", proxyResponse.data.jsmResponse);

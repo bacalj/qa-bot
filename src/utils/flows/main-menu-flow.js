@@ -16,10 +16,10 @@ export const createMainMenuFlow = ({
     start: {
       message: welcome,
       options: [
-        "Ask a question about ACCESS",
-        "Open a Help Ticket",
-        "Provide feedback to ACCESS",
-        "Open Dev Ticket"
+        "Ask a question about ACCESS", // AI loop
+        "Open a Help Ticket", // Jira Ticket
+        "Provide feedback to ACCESS", // Feedback
+        "Open Dev Ticket" // Dev Ticket
       ],
       chatDisabled: true,
       path: (chatState) => {

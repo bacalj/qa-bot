@@ -109,11 +109,17 @@ export const createFeedbackFlow = ({
               feedbackForm.uploadedFiles || []
             );
             console.log("| 🌎 API submission data:", apiData);
+            // TODO: Send API data to API
+
           } catch (error) {
             console.error("| ❌ Error preparing feedback data:", error);
           }
         }
       },
+      path: "feedback_success"
+    },
+    feedback_success: {
+      message: "Thank you for your feedback! (this is not sent to the API yet)",
       path: "start"
     }
   };

@@ -401,41 +401,49 @@ export const createTicketFlow = ({ ticketForm = {}, setTicketForm = () => {} }) 
       },
       options: ["Submit Ticket", "Back to Main Menu"],
       chatDisabled: true,
-      function: (chatState) => {
+      path: (chatState) => {
         if (chatState.userInput === "Submit Ticket") {
-          // Prepare form data
-          const formData = {
-            email: ticketForm.email || "",
-            customfield_10103: ticketForm.accessid || "",
-            customfield_10108: ticketForm.name || "",
-            summary: ticketForm.summary || "General Support Ticket",
-            customfield_10111: ticketForm.category || "",
-            description: ticketForm.description || "",
-            priority: ticketForm.priority || "medium",
-            access_resource: ticketForm.involvesResource || "no",
-            direct_ticket: ticketForm.keywords === "None of the above" ? "" : ticketForm.keywords || ""
-          };
+          return "general_help_submitting";
+        }
+        return "start";
+      }
+    },
+    general_help_submitting: {
+      message: async (chatState) => {
+        // Prepare form data
+        const formData = {
+          email: ticketForm.email || "",
+          customfield_10103: ticketForm.accessid || "",
+          customfield_10108: ticketForm.name || "",
+          summary: ticketForm.summary || "General Support Ticket",
+          customfield_10111: ticketForm.category || "",
+          description: ticketForm.description || "",
+          priority: ticketForm.priority || "medium",
+          access_resource: ticketForm.involvesResource || "no",
+          direct_ticket: ticketForm.keywords === "None of the above" ? "" : ticketForm.keywords || ""
+        };
 
-          // Also prepare API submission data for future implementation
-          console.log("| 1 🌎 Form data for general help ticket:", formData);
-          const apiData = prepareApiSubmission(
+        try {
+          // Prepare API submission data - now awaiting the async function
+          const apiData = await prepareApiSubmission(
             formData,
             'support',
             ticketForm.uploadedFiles || []
           );
-          console.log("| 3 🌎 Prepared API submission for general help ticket:", apiData);
+          console.log("| 🌎 API submission data for general ticket:", apiData);
 
-          // Convert to async IIFE to handle awaiting the Promise
-          (async () => {
-            try {
-              const proxyResponse = await sendPreparedDataToProxy(apiData, 'dev-create-support-ticket');
-              console.log("| 5 🌎 Proxy response:", proxyResponse);
-            } catch (error) {
-              console.error("| ❌ Error sending data to proxy:", error);
-            }
-          })();
+          const proxyResponse = await sendPreparedDataToProxy(apiData, 'create-support-ticket');
+          console.log("| 🌎 General ticket proxy response:", proxyResponse.data.jsmResponse);
+
+          // Return success message with ticket details
+          return `A ticket for your issue, "${ticketForm.summary}", was created at ${proxyResponse.data.jsmResponse.createdDate.friendly}`;
+        } catch (error) {
+          console.error("| ❌ Error sending general ticket data to proxy:", error);
+          return "Sorry, there was an error submitting your ticket. Please try again later.";
         }
       },
+      options: ["Back to Main Menu"],
+      chatDisabled: true,
       path: "start"
     }
   };

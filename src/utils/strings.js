@@ -29,7 +29,6 @@ export const constants = {
 
   // Netlify function constants
   netlifyBaseUrl: process.env.REACT_APP_NETLIFY_BASE_URL,
-  netlifyFunctionName: process.env.REACT_APP_NETLIFY_FUNCTION_NAME,
 };
 
 export const buildWelcomeMessage = (isLoggedIn, welcomeMessage) => {

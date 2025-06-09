@@ -1,5 +1,5 @@
 import React, { useImperativeHandle } from 'react';
-import { useFlow, useMessages, useChatWindow } from "react-chatbotify";
+import { useMessages, useChatWindow } from "react-chatbotify";
 import useLoginStateTransition from '../hooks/useLoginStateTransition';
 
 /**
@@ -17,7 +17,6 @@ import useLoginStateTransition from '../hooks/useLoginStateTransition';
 const BotController = React.forwardRef(({ embedded, setIsBotLoggedIn, isBotLoggedIn }, ref) => {
   // Get the chatbot hooks (must be inside ChatBotProvider)
   const messages = useMessages();
-  const flow = useFlow();
   const chatWindow = useChatWindow();
 
   // Handle login state transitions with automatic message injection
