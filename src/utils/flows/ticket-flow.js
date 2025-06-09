@@ -40,7 +40,7 @@ export const createTicketFlow = ({ ticketForm = {}, setTicketForm = () => {} }) 
         } else if (chatState.userInput === "Logging into affiliated infrastructure") {
           return "affiliated_help";
         } else if (chatState.userInput === "Another question") {
-          return "general_help";
+          return "general_help_email";
         }
         return "help_ticket";
       }
