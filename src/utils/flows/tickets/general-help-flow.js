@@ -167,7 +167,11 @@ export const createGeneralHelpFlow = ({ ticketForm = {}, setTicketForm = () => {
     },
     general_help_accessid: {
       message: "What is your ACCESS ID?",
-      function: (chatState) => setTicketForm({...ticketForm, accessId: chatState.userInput}),
+      function: (chatState) => {
+        console.log("| 🔍 ACCESS ID step executing, input:", chatState.userInput);
+        setTicketForm({...ticketForm, accessId: chatState.userInput});
+        console.log("| 🔍 Updated form should have accessId:", {...ticketForm, accessId: chatState.userInput});
+      },
       path: "general_help_ticket_summary"
     },
     general_help_ticket_summary: {
