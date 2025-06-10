@@ -42,30 +42,14 @@ export const createDevTicketFlow = ({ ticketForm = {}, setTicketForm = () => {} 
       },
       path: (chatState) => {
         if (chatState.userInput === "Bug Report") {
-          return "dev_ticket_email";
+          return "dev_ticket_summary";
         } else if (chatState.userInput === "Feature Request") {
-          return "dev_ticket_email";
+          return "dev_ticket_summary";
         } else if (chatState.userInput === "Other Development Issue") {
-          return "dev_ticket_email";
+          return "dev_ticket_summary";
         }
         return "dev_ticket";
       }
-    },
-    dev_ticket_email: {
-      message: "What is your email?",
-      function: (chatState) => setTicketForm({...ticketForm, email: chatState.userInput}),
-      path: async (chatState) => {
-        if (!isValidEmail(chatState.userInput)) {
-          await chatState.injectMessage("Please enter a valid email address.");
-          return;
-        }
-        return "dev_ticket_accessid";
-      }
-    },
-    dev_ticket_accessid: {
-      message: "What is your ACCESS ID?",
-      function: (chatState) => setTicketForm({...ticketForm, accessId: chatState.userInput}),
-      path: "dev_ticket_summary"
     },
     dev_ticket_summary: {
       message: "Please provide a summary of your issue.",
@@ -103,7 +87,7 @@ export const createDevTicketFlow = ({ ticketForm = {}, setTicketForm = () => {} 
         if (chatState.userInput && chatState.userInput.includes("Other")) {
           return "dev_ticket_additional_keywords";
         } else {
-          return "dev_ticket_grand_summary";
+          return "dev_ticket_email";
         }
       }
     },
@@ -132,6 +116,22 @@ export const createDevTicketFlow = ({ ticketForm = {}, setTicketForm = () => {} 
           keywords: formattedKeywords
         });
       },
+      path: "dev_ticket_email"
+    },
+    dev_ticket_email: {
+      message: "What is your email?",
+      function: (chatState) => setTicketForm({...ticketForm, email: chatState.userInput}),
+      path: async (chatState) => {
+        if (!isValidEmail(chatState.userInput)) {
+          await chatState.injectMessage("Please enter a valid email address.");
+          return;
+        }
+        return "dev_ticket_accessid";
+      }
+    },
+    dev_ticket_accessid: {
+      message: "What is your ACCESS ID?",
+      function: (chatState) => setTicketForm({...ticketForm, accessId: chatState.userInput}),
       path: "dev_ticket_grand_summary"
     },
     dev_ticket_grand_summary: {

@@ -24,21 +24,6 @@ export const createGeneralHelpFlow = ({ ticketForm = {}, setTicketForm = () => {
 
   return {
     // FORM flow - General Help Ticket Form Flow
-    general_help_email: {
-      message: "What is your email address?",
-      function: (chatState) => setTicketForm({...ticketForm, email: chatState.userInput}),
-      path: "general_help_accessid"
-    },
-    general_help_accessid: {
-      message: "What is your ACCESS ID?",
-      function: (chatState) => setTicketForm({...ticketForm, accessid: chatState.userInput}),
-      path: "general_help_name"
-    },
-    general_help_name: {
-      message: "What is your name?",
-      function: (chatState) => setTicketForm({...ticketForm, name: chatState.userInput}),
-      path: "general_help_summary"
-    },
     general_help_summary: {
       message: "Please summarize your issue.",
       function: (chatState) => setTicketForm({...ticketForm, summary: chatState.userInput}),
@@ -116,6 +101,21 @@ export const createGeneralHelpFlow = ({ ticketForm = {}, setTicketForm = () => {
       ],
       chatDisabled: false,
       function: (chatState) => setTicketForm({...ticketForm, keywords: chatState.userInput}),
+      path: "general_help_email"
+    },
+    general_help_email: {
+      message: "What is your email address?",
+      function: (chatState) => setTicketForm({...ticketForm, email: chatState.userInput}),
+      path: "general_help_accessid"
+    },
+    general_help_accessid: {
+      message: "What is your ACCESS ID?",
+      function: (chatState) => setTicketForm({...ticketForm, accessid: chatState.userInput}),
+      path: "general_help_name"
+    },
+    general_help_name: {
+      message: "What is your name?",
+      function: (chatState) => setTicketForm({...ticketForm, name: chatState.userInput}),
       path: "general_help_ticket_summary"
     },
     general_help_ticket_summary: {

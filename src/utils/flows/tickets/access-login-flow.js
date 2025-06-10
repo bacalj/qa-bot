@@ -34,26 +34,11 @@ export const createAccessLoginFlow = ({ ticketForm = {}, setTicketForm = () => {
       chatDisabled: true,
       path: (chatState) =>
         chatState.userInput === "Submit ACCESS Login Ticket"
-          ? "access_login_email"
+          ? "access_login_description"
           : "start"
     },
 
     // FORM flow - Access Login Form
-    access_login_email: {
-      message: "What is your email?",
-      function: (chatState) => setTicketForm({...ticketForm, email: chatState.userInput}),
-      path: "access_login_name"
-    },
-    access_login_name: {
-      message: "What is your name?",
-      function: (chatState) => setTicketForm({...ticketForm, name: chatState.userInput}),
-      path: "access_login_accessid"
-    },
-    access_login_accessid: {
-      message: "What is your ACCESS ID?",
-      function: (chatState) => setTicketForm({...ticketForm, accessid: chatState.userInput}),
-      path: "access_login_description"
-    },
     access_login_description: {
       message: "Please describe the issue you're having logging in.",
       function: (chatState) => setTicketForm({...ticketForm, description: chatState.userInput}),
@@ -76,7 +61,7 @@ export const createAccessLoginFlow = ({ ticketForm = {}, setTicketForm = () => {
       function: (chatState) => setTicketForm({...ticketForm, wantsAttachment: chatState.userInput}),
       path: (chatState) => chatState.userInput === "Yes"
         ? "access_login_upload"
-        : "access_login_summary"
+        : "access_login_email"
     },
     access_login_upload: {
       message: "Please upload your screenshot.",
@@ -84,6 +69,21 @@ export const createAccessLoginFlow = ({ ticketForm = {}, setTicketForm = () => {
       options: ["Continue"],
       chatDisabled: true,
       function: () => setTicketForm({...ticketForm, uploadConfirmed: true}),
+      path: "access_login_email"
+    },
+    access_login_email: {
+      message: "What is your email?",
+      function: (chatState) => setTicketForm({...ticketForm, email: chatState.userInput}),
+      path: "access_login_name"
+    },
+    access_login_name: {
+      message: "What is your name?",
+      function: (chatState) => setTicketForm({...ticketForm, name: chatState.userInput}),
+      path: "access_login_accessid"
+    },
+    access_login_accessid: {
+      message: "What is your ACCESS ID?",
+      function: (chatState) => setTicketForm({...ticketForm, accessid: chatState.userInput}),
       path: "access_login_summary"
     },
     access_login_summary: {

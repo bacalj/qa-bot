@@ -34,26 +34,11 @@ export const createAffiliatedLoginFlow = ({ ticketForm = {}, setTicketForm = () 
       chatDisabled: true,
       path: (chatState) =>
         chatState.userInput === "Submit Resource Login Ticket"
-          ? "affiliated_login_email"
+          ? "affiliated_login_resource"
           : "start"
     },
 
     // FORM flow - Affiliated/Resource Login
-    affiliated_login_email: {
-      message: "What is your email?",
-      function: (chatState) => setTicketForm({...ticketForm, email: chatState.userInput}),
-      path: "affiliated_login_name"
-    },
-    affiliated_login_name: {
-      message: "What is your name?",
-      function: (chatState) => setTicketForm({...ticketForm, name: chatState.userInput}),
-      path: "affiliated_login_accessid"
-    },
-    affiliated_login_accessid: {
-      message: "What is your ACCESS ID?",
-      function: (chatState) => setTicketForm({...ticketForm, accessid: chatState.userInput}),
-      path: "affiliated_login_resource"
-    },
     affiliated_login_resource: {
       message: "Which ACCESS resource are you trying to access?",
       function: (chatState) => setTicketForm({...ticketForm, resource: chatState.userInput}),
@@ -76,7 +61,7 @@ export const createAffiliatedLoginFlow = ({ ticketForm = {}, setTicketForm = () 
       function: (chatState) => setTicketForm({...ticketForm, wantsAttachment: chatState.userInput}),
       path: (chatState) => chatState.userInput === "Yes"
         ? "affiliated_login_upload"
-        : "affiliated_login_summary"
+        : "affiliated_login_email"
     },
     affiliated_login_upload: {
       message: "Please upload your screenshot.",
@@ -84,6 +69,21 @@ export const createAffiliatedLoginFlow = ({ ticketForm = {}, setTicketForm = () 
       options: ["Continue"],
       chatDisabled: true,
       function: () => setTicketForm({...ticketForm, uploadConfirmed: true}),
+      path: "affiliated_login_email"
+    },
+    affiliated_login_email: {
+      message: "What is your email?",
+      function: (chatState) => setTicketForm({...ticketForm, email: chatState.userInput}),
+      path: "affiliated_login_name"
+    },
+    affiliated_login_name: {
+      message: "What is your name?",
+      function: (chatState) => setTicketForm({...ticketForm, name: chatState.userInput}),
+      path: "affiliated_login_accessid"
+    },
+    affiliated_login_accessid: {
+      message: "What is your ACCESS ID?",
+      function: (chatState) => setTicketForm({...ticketForm, accessid: chatState.userInput}),
       path: "affiliated_login_summary"
     },
     affiliated_login_summary: {
