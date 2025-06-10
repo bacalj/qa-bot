@@ -230,3 +230,18 @@
   align-items: center;
   border: 2px solid red;
 }
+
+.rcb-checkbox-container {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: flex-start;
+}
+
+.rcb-checkbox-row-container {
+  flex: 0 0 auto;
+  width: auto;
+  padding-right: 8px;
+}
