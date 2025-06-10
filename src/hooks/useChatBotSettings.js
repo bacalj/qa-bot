@@ -44,7 +44,8 @@ const useChatBotSettings = ({
       },
       botBubble: {
         simulateStream: true,
-        dangerouslySetInnerHtml: true
+        dangerouslySetInnerHtml: true,
+        streamSpeed: 20,
       },
       chatButton: {
         icon: constants.CHATBOT.AVATAR_URL,
