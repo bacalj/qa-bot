@@ -122,7 +122,7 @@ export const createAffiliatedLoginFlow = ({ ticketForm = {}, setTicketForm = () 
         return `Thank you for providing your resource login issue details. Here's a summary:\n\n` +
                `Name: ${ticketForm.name || 'Not provided'}\n` +
                `Email: ${ticketForm.email || 'Not provided'}\n` +
-               `ACCESS ID: ${ticketForm.accessId || 'Not provided'}\n` +
+               // `ACCESS ID: ${ticketForm.accessId || 'Not provided'}\n` +
                `Resource: ${ticketForm.resource || 'Not provided'}\n` +
                `Resource User ID: ${ticketForm.userIdResource || 'Not provided'}\n` +
                `Issue Description: ${ticketForm.description || 'Not provided'}${fileInfo}\n\n` +

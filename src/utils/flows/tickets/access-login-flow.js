@@ -96,7 +96,7 @@ export const createAccessLoginFlow = ({ ticketForm = {}, setTicketForm = () => {
         return `Thank you for providing your ACCESS login issue details. Here's a summary:\n\n` +
                `Name: ${ticketForm.name || 'Not provided'}\n` +
                `Email: ${ticketForm.email || 'Not provided'}\n` +
-               `ACCESS ID: ${ticketForm.accessId || 'Not provided'}\n` +
+               // `ACCESS ID: ${ticketForm.accessId || 'Not provided'}\n` +
                `Identity Provider: ${ticketForm.identityProvider || 'Not provided'}\n` +
                `Browser: ${ticketForm.browser || 'Not provided'}\n` +
                `Issue Description: ${ticketForm.description || 'Not provided'}${fileInfo}\n\n` +

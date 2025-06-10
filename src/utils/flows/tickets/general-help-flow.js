@@ -168,11 +168,13 @@ export const createGeneralHelpFlow = ({ ticketForm = {}, setTicketForm = () => {
     general_help_accessid: {
       message: "What is your ACCESS ID?",
       function: (chatState) => {
-        console.log("| 🔍 ACCESS ID step executing, input:", chatState.userInput);
         setTicketForm({...ticketForm, accessId: chatState.userInput});
-        console.log("| 🔍 Updated form should have accessId:", {...ticketForm, accessId: chatState.userInput});
       },
-      path: "general_help_ticket_summary"
+      path: (chatState) => {
+        // Add small delay to let React update state
+        setTimeout(() => {}, 100);
+        return "general_help_ticket_summary";
+      }
     },
     general_help_ticket_summary: {
       message: () => {
@@ -181,12 +183,10 @@ export const createGeneralHelpFlow = ({ ticketForm = {}, setTicketForm = () => {
           fileInfo = `\nAttachments: ${ticketForm.uploadedFiles.length} file(s) attached`;
         }
 
-        console.log("| 🔍 Debug ticketForm in summary:", ticketForm);
-
         return `Thank you for providing your issue details. Here's a summary:\n\n` +
                `Name: ${ticketForm.name || 'Not provided'}\n` +
                `Email: ${ticketForm.email || 'Not provided'}\n` +
-               `ACCESS ID: ${ticketForm.accessId || 'Not provided'}\n` +
+               // `ACCESS ID: ${ticketForm.accessId || 'Not provided'}\n` +
                `Issue Summary: ${ticketForm.summary || 'Not provided'}\n` +
                `Category: ${ticketForm.category || 'Not provided'}\n` +
                `Priority: ${ticketForm.priority || 'Not provided'}\n` +
