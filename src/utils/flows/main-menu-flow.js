@@ -19,7 +19,8 @@ export const createMainMenuFlow = ({
         "Ask a question about ACCESS", // AI loop
         "Open a Help Ticket", // Jira Ticket
         "Provide feedback to ACCESS", // Feedback
-        // "Open Dev Ticket" // Dev Ticket
+        "Report a security issue", // Security
+        // "Open Dev Ticket" // Dev Ticket Example
       ],
       chatDisabled: true,
       path: (chatState) => {
