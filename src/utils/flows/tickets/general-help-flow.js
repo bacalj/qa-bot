@@ -237,6 +237,8 @@ export const createGeneralHelpFlow = ({ ticketForm = {}, setTicketForm = () => {
     },
     general_help_success: {
       message: "Thank you for submitting your ticket. We will follow up with you shortly.",
+      options: ["Back to Main Menu"],
+      chatDisabled: true,
       path: "start"
     }
   };

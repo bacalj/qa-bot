@@ -120,6 +120,8 @@ export const createFeedbackFlow = ({
     },
     feedback_success: {
       message: "Thank you for your feedback! If you provided your contact information, we will follow up with you shortly.",
+      options: ["Back to Main Menu"],
+      chatDisabled: true,
       path: "start"
     }
   };
