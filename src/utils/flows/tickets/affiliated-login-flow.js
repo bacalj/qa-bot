@@ -30,17 +30,43 @@ export const createAffiliatedLoginFlow = ({ ticketForm = {}, setTicketForm = () 
                "• Confirm you have the correct username for that resource\n" +
                "• Check if the resource is undergoing maintenance\n\n" +
                "Would you like to submit a help ticket for resource provider login issues?",
-      options: ["Submit Resource Login Ticket", "Back to Main Menu"],
+      options: ["Create Resource Login Ticket", "Back to Main Menu"],
       chatDisabled: true,
       path: (chatState) =>
-        chatState.userInput === "Submit Resource Login Ticket"
+        chatState.userInput === "Create Resource Login Ticket"
           ? "affiliated_login_resource"
           : "start"
     },
 
     // FORM flow - Affiliated/Resource Login
     affiliated_login_resource: {
-      message: "Which ACCESS resource are you trying to access?",
+      message: "Please select the ACCESS Resource you are trying to access. Click the 'Continue' button when done.",
+      checkboxes: {
+        items: [
+          "ACES",
+          "Anvil",
+          "Bridges-2",
+          "DARWIN",
+          "Delta",
+          "DeltaAI",
+          "Derecho",
+          "Expanse",
+          "FASTER",
+          "Granite",
+          "Jetstream2",
+          "KyRIC",
+          "Launch",
+          "Neocortex",
+          "Ookami",
+          "Open Science Grid",
+          "Open Storage Network",
+          "Ranch",
+          "Stampede3"
+        ],
+        min: 1,
+        max: 19
+      },
+      chatDisabled: true,
       function: (chatState) => setTicketForm({...ticketForm, resource: chatState.userInput}),
       path: "affiliated_login_userid"
     },

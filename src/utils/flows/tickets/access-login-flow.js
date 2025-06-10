@@ -30,17 +30,17 @@ export const createAccessLoginFlow = ({ ticketForm = {}, setTicketForm = () => {
                "• Clear your browser cookies and cache\n" +
                "• Check if you're using the correct identity provider\n\n" +
                "Would you like to submit a help ticket for ACCESS login issues?",
-      options: ["Submit ACCESS Login Ticket", "Back to Main Menu"],
+      options: ["Create ACCESS Login Ticket", "Back to Main Menu"],
       chatDisabled: true,
       path: (chatState) =>
-        chatState.userInput === "Submit ACCESS Login Ticket"
+        chatState.userInput === "Create ACCESS Login Ticket"
           ? "access_login_description"
           : "start"
     },
 
     // FORM flow - Access Login Form
     access_login_description: {
-      message: "Please describe the issue you're having logging in.",
+      message: "Describe your login issue.",
       function: (chatState) => setTicketForm({...ticketForm, description: chatState.userInput}),
       path: "access_login_identity"
     },
