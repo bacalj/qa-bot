@@ -2,7 +2,7 @@
 export const constants = {
   LOGIN_URL: '/login',
   PROMPT_TEXT: '',
-  WELCOME_MESSAGE: 'What can I help you with?',
+  WELCOME_MESSAGE: 'Hello. What can I help you with?',
   WELCOME_MESSAGE_LOGGED_OUT: 'To ask questions, please log in.',
   WELCOME_MESSAGE_LOGIN_TRANSITION: 'You are now logged in.',
   WELCOME_MESSAGE_LOGOUT_TRANSITION: 'You have been logged out.',

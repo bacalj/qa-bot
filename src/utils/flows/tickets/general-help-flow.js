@@ -83,24 +83,43 @@ export const createGeneralHelpFlow = ({ ticketForm = {}, setTicketForm = () => {
       path: "general_help_keywords"
     },
     general_help_keywords: {
-      message: "Please select any relevant keywords to help us direct your ticket (select one or type your own):",
-      options: [
-        "C, C++",
-        "Abaqus",
-        "Algorithms",
-        "API",
-        "Bash",
-        "CloudLab",
-        "Docker",
-        "Hadoop",
-        "Jupyter",
-        "MatLab",
-        "VPN",
-        "XML",
-        "None of the above"
-      ],
-      chatDisabled: false,
+      message: "Please select up to 5 keywords that describe your issue. Click the 'Continue' button when done.",
+      checkboxes: { items: ["C, C++", "Abaqus", "Algorithms", "API", "Bash", "CloudLab", "Docker", "Hadoop", "Jupyter", "MatLab", "VPN", "XML", "Other"], min: 0, max: 5 },
+      chatDisabled: true,
       function: (chatState) => setTicketForm({...ticketForm, keywords: chatState.userInput}),
+      path: (chatState) => {
+        if (chatState.userInput && chatState.userInput.includes("Other")) {
+          return "general_help_additional_keywords";
+        } else {
+          return "general_help_email";
+        }
+      }
+    },
+    general_help_additional_keywords: {
+      message: "Please enter additional keywords, separated by commas:",
+      function: (chatState) => {
+        // Get the current keywords selected from checkboxes
+        const currentKeywords = ticketForm.keywords || [];
+        const additionalKeywords = chatState.userInput;
+
+        // Ensure we're working with arrays for consistency
+        const keywordsArray = Array.isArray(currentKeywords)
+          ? [...currentKeywords]
+          : currentKeywords.split(',').map(k => k.trim());
+
+        // Filter out "Other" from the keywords
+        const filteredKeywords = keywordsArray.filter(k => k !== "Other");
+
+        // Add the additional keywords
+        const formattedKeywords = Array.isArray(filteredKeywords) && filteredKeywords.length > 0
+          ? [...filteredKeywords, additionalKeywords].join(", ")
+          : additionalKeywords;
+
+        setTicketForm({
+          ...ticketForm,
+          keywords: formattedKeywords
+        });
+      },
       path: "general_help_email"
     },
     general_help_email: {

@@ -52,6 +52,17 @@ const QABot = React.forwardRef((props, ref) => {
     defaultOpen
   });
 
+  // Add styles for checkbox layout
+  const styles = {
+    botCheckboxRowStyle: {
+      display: 'flex',
+      flexWrap: 'wrap',
+      gap: '8px',
+      justifyContent: 'flex-start',
+      alignItems: 'center'
+    }
+  };
+
   useEffect(() => {
     if (isLoggedIn !== undefined) setIsBotLoggedIn(isLoggedIn);
   }, [isLoggedIn]);
@@ -70,6 +81,7 @@ const QABot = React.forwardRef((props, ref) => {
         />
         <ChatBot
           settings={settings}
+          styles={styles}
           flow={flow}
         />
       </ChatBotProvider>
