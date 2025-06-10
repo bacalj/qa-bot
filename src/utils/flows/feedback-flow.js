@@ -80,7 +80,13 @@ export const createFeedbackFlow = ({
       path: "feedback_summary"
     },
     feedback_summary: {
-      message: () => {
+      message: (chatState) => {
+        // TODO: Right now we have to handle ACCESS ID specially using chatState.userInput because of React state timing issues,
+        // and this only works because ACCESS ID is the last field collected before the summary.
+        // Instead we should either: 1) fix the fundamental closure issue so message functions can access current state,
+        // or 2) implement a more robust state management approach that doesn't depend on field collection order.
+        const currentAccessId = chatState.prevPath === 'feedback_accessid' ? chatState.userInput : (feedbackForm.accessid || 'Not provided');
+
         let fileInfo = '';
         if (feedbackForm.uploadedFiles && feedbackForm.uploadedFiles.length > 0) {
           fileInfo = `\nAttachments: ${feedbackForm.uploadedFiles.length} file(s) attached`;
@@ -90,7 +96,7 @@ export const createFeedbackFlow = ({
         if (feedbackForm.wantsContact === "Yes") {
           contactInfo = `Name: ${feedbackForm.name || 'Not provided'}\n` +
                        `Email: ${feedbackForm.email || 'Not provided'}\n` +
-                       // `ACCESS ID: ${feedbackForm.accessid || 'Not provided'}\n` +
+                       `ACCESS ID: ${currentAccessId}\n` +
                        '';
         } else {
           contactInfo = `Contact Information: Not provided\n`;
