@@ -86,7 +86,20 @@ export const createFeedbackFlow = ({
           fileInfo = `\nAttachments: ${feedbackForm.uploadedFiles.length} file(s) attached`;
         }
 
-        return `Thank you for sharing your feedback!${fileInfo}`;
+        let contactInfo = '';
+        if (feedbackForm.wantsContact === "Yes") {
+          contactInfo = `Name: ${feedbackForm.name || 'Not provided'}\n` +
+                       `Email: ${feedbackForm.email || 'Not provided'}\n` +
+                       // `ACCESS ID: ${feedbackForm.accessid || 'Not provided'}\n` +
+                       '';
+        } else {
+          contactInfo = `Contact Information: Not provided\n`;
+        }
+
+        return `Thank you for providing your feedback. Here's a summary:\n\n` +
+               contactInfo +
+               `Feedback: ${feedbackForm.feedback || 'Not provided'}${fileInfo}\n\n` +
+               `Would you like to submit this feedback?`;
       },
       options: ["Submit Feedback", "Back to Main Menu"],
       chatDisabled: true,
