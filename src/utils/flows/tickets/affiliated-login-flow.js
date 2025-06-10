@@ -112,17 +112,25 @@ export const createAffiliatedLoginFlow = ({ ticketForm = {}, setTicketForm = () 
       function: (chatState) => setTicketForm({...ticketForm, accessId: chatState.userInput}),
       path: "affiliated_login_summary"
     },
-    affiliated_login_summary: {
-      message: () => {
+        affiliated_login_summary: {
+      message: (chatState) => {
+        // TODO: Right now we have to handle ACCESS ID specially using chatState.userInput because of React state timing issues,
+        // and this only works because ACCESS ID is the last field collected before the summary.
+        // Instead we should either: 1) fix the fundamental closure issue so message functions can access current state,
+        // or 2) implement a more robust state management approach that doesn't depend on field collection order.
+        const currentAccessId = chatState.prevPath === 'affiliated_login_accessid' ? chatState.userInput : (ticketForm.accessId || 'Not provided');
+
         let fileInfo = '';
         if (ticketForm.uploadedFiles && ticketForm.uploadedFiles.length > 0) {
           fileInfo = `\nAttachments: ${ticketForm.uploadedFiles.length} file(s) attached`;
         }
 
+        console.log("| 🔍 Debug: Using ACCESS ID from chatState.userInput:", currentAccessId);
+
         return `Thank you for providing your resource login issue details. Here's a summary:\n\n` +
                `Name: ${ticketForm.name || 'Not provided'}\n` +
                `Email: ${ticketForm.email || 'Not provided'}\n` +
-               // `ACCESS ID: ${ticketForm.accessId || 'Not provided'}\n` +
+               `ACCESS ID: ${currentAccessId}\n` +
                `Resource: ${ticketForm.resource || 'Not provided'}\n` +
                `Resource User ID: ${ticketForm.userIdResource || 'Not provided'}\n` +
                `Issue Description: ${ticketForm.description || 'Not provided'}${fileInfo}\n\n` +

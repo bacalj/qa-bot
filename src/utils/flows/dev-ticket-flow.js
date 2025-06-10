@@ -135,7 +135,13 @@ export const createDevTicketFlow = ({ ticketForm = {}, setTicketForm = () => {} 
       path: "dev_ticket_grand_summary"
     },
     dev_ticket_grand_summary: {
-      message: () => {
+      message: (chatState) => {
+        // TODO: Right now we have to handle ACCESS ID specially using chatState.userInput because of React state timing issues,
+        // and this only works because ACCESS ID is the last field collected before the summary.
+        // Instead we should either: 1) fix the fundamental closure issue so message functions can access current state,
+        // or 2) implement a more robust state management approach that doesn't depend on field collection order.
+        const currentAccessId = chatState.prevPath === 'dev_ticket_accessid' ? chatState.userInput : (ticketForm.accessId || 'Not provided');
+
         let fileInfo = '';
         if (ticketForm.uploadedFiles && ticketForm.uploadedFiles.length > 0) {
           fileInfo = `\nAttachments: ${ticketForm.uploadedFiles.length} file(s) attached`;
@@ -143,7 +149,7 @@ export const createDevTicketFlow = ({ ticketForm = {}, setTicketForm = () => {} 
 
         return `Thank you for providing your issue details. Here's a summary:\n\n` +
                `Email: ${ticketForm.email || 'Not provided'}\n` +
-               `ACCESS ID: ${ticketForm.accessId || 'Not provided'}\n` +
+               `ACCESS ID: ${currentAccessId}\n` +
                `Summary: ${ticketForm.summary || 'Not provided'}\n` +
                `Keywords: ${ticketForm.keywords || 'Not provided'}\n` +
                `Description: ${ticketForm.description || 'Not provided'}${fileInfo}\n\n` +
