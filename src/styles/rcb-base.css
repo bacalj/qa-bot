@@ -238,10 +238,30 @@
   flex-wrap: wrap;
   gap: 8px;
   justify-content: flex-start;
+  margin-right: 20px;
 }
 
 .rcb-checkbox-row-container {
   flex: 0 0 auto;
   width: auto;
   padding-right: 8px;
+  margin-top: 2px;
+}
+
+/* Style the continue button to show "Continue" text instead of arrow */
+.rcb-checkbox-next-button {
+  cursor: pointer !important;
+  padding: 5px 10px;
+  font-size: 16px;
+  border-radius: 50px;
+  padding-top:12px;
+  margin-top: 10px;
+}
+
+.rcb-checkbox-next-button::before {
+  content: "Continue";
+}
+
+.rcb-checkbox-next-button svg {
+  display: none;
 }

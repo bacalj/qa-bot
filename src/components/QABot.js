@@ -60,6 +60,16 @@ const QABot = React.forwardRef((props, ref) => {
       gap: '8px',
       justifyContent: 'flex-start',
       alignItems: 'center'
+    },
+    botCheckboxNextStyle: {
+      background: '#42b0c5',
+      color: 'white',
+      border: 'none',
+      borderRadius: '4px',
+      padding: '8px 16px',
+      cursor: 'pointer',
+      fontSize: '14px',
+      fontWeight: '500'
     }
   };
 
