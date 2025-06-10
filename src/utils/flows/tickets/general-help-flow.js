@@ -24,8 +24,8 @@ export const createGeneralHelpFlow = ({ ticketForm = {}, setTicketForm = () => {
 
   return {
     // FORM flow - General Help Ticket Form Flow
-    general_help_summary: {
-      message: "Please summarize your issue.",
+    general_help_: {
+      message: "Provide a short title for your ticket.",
       function: (chatState) => setTicketForm({...ticketForm, summary: chatState.userInput}),
       path: "general_help_category"
     },
@@ -47,7 +47,7 @@ export const createGeneralHelpFlow = ({ ticketForm = {}, setTicketForm = () => {
       path: "general_help_description"
     },
     general_help_description: {
-      message: "Please provide significant details about your issue.",
+      message: "Please describe your issue.",
       function: (chatState) => setTicketForm({...ticketForm, description: chatState.userInput}),
       path: "general_help_priority"
     },
@@ -80,10 +80,43 @@ export const createGeneralHelpFlow = ({ ticketForm = {}, setTicketForm = () => {
       options: ["Yes", "No"],
       chatDisabled: true,
       function: (chatState) => setTicketForm({...ticketForm, involvesResource: chatState.userInput.toLowerCase()}),
+      path: (chatState) => chatState.userInput === "Yes"
+        ? "general_help_resource_details"
+        : "general_help_keywords"
+    },
+    general_help_resource_details: {
+      message: "Please select the ACCESS Resource(s) involved with your issue. Click the 'Continue' button when done.",
+      checkboxes: {
+        items: [
+          "ACES",
+          "Anvil",
+          "Bridges-2",
+          "DARWIN",
+          "Delta",
+          "DeltaAI",
+          "Derecho",
+          "Expanse",
+          "FASTER",
+          "Granite",
+          "Jetstream2",
+          "KyRIC",
+          "Launch",
+          "Neocortex",
+          "Ookami",
+          "Open Science Grid",
+          "Open Storage Network",
+          "Ranch",
+          "Stampede3"
+        ],
+        min: 1,
+        max: 19
+      },
+      chatDisabled: true,
+      function: (chatState) => setTicketForm({...ticketForm, resourceDetails: chatState.userInput}),
       path: "general_help_keywords"
     },
     general_help_keywords: {
-      message: "Please select up to 5 keywords that describe your issue. Click the 'Continue' button when done.",
+      message: "Please add up to 5 keywords to help route your ticket.",
       checkboxes: { items: ["C, C++", "Abaqus", "Algorithms", "API", "Bash", "CloudLab", "Docker", "Hadoop", "Jupyter", "MatLab", "VPN", "XML", "Other"], min: 0, max: 5 },
       chatDisabled: true,
       function: (chatState) => setTicketForm({...ticketForm, keywords: chatState.userInput}),
