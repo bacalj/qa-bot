@@ -109,7 +109,7 @@ export const createAffiliatedLoginFlow = ({ ticketForm = {}, setTicketForm = () 
     },
     affiliated_login_accessid: {
       message: "What is your ACCESS ID?",
-      function: (chatState) => setTicketForm({...ticketForm, accessid: chatState.userInput}),
+      function: (chatState) => setTicketForm({...ticketForm, accessId: chatState.userInput}),
       path: "affiliated_login_summary"
     },
     affiliated_login_summary: {
@@ -122,7 +122,7 @@ export const createAffiliatedLoginFlow = ({ ticketForm = {}, setTicketForm = () 
         return `Thank you for providing your resource login issue details. Here's a summary:\n\n` +
                `Name: ${ticketForm.name || 'Not provided'}\n` +
                `Email: ${ticketForm.email || 'Not provided'}\n` +
-               `ACCESS ID: ${ticketForm.accessid || 'Not provided'}\n` +
+               `ACCESS ID: ${ticketForm.accessId || 'Not provided'}\n` +
                `Resource: ${ticketForm.resource || 'Not provided'}\n` +
                `Resource User ID: ${ticketForm.userIdResource || 'Not provided'}\n` +
                `Issue Description: ${ticketForm.description || 'Not provided'}${fileInfo}\n\n` +
@@ -136,7 +136,7 @@ export const createAffiliatedLoginFlow = ({ ticketForm = {}, setTicketForm = () 
           const formData = {
             email: ticketForm.email || "",
             customfield_10108: ticketForm.name || "",
-            customfield_10103: ticketForm.accessid || "",
+            customfield_10103: ticketForm.accessId || "",
             customfield_10110: ticketForm.resource || "",
             description: ticketForm.description || "",
             summary: "Resource Provider Login Issue",

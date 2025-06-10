@@ -49,13 +49,6 @@ export const createGeneralHelpFlow = ({ ticketForm = {}, setTicketForm = () => {
     general_help_description: {
       message: "Please describe your issue.",
       function: (chatState) => setTicketForm({...ticketForm, description: chatState.userInput}),
-      path: "general_help_priority"
-    },
-    general_help_priority: {
-      message: "Please select a priority for your issue:",
-      options: ["Lowest", "Low", "Medium", "High", "Highest"],
-      chatDisabled: true,
-      function: (chatState) => setTicketForm({...ticketForm, priority: chatState.userInput.toLowerCase()}),
       path: "general_help_attachment"
     },
     general_help_attachment: {
@@ -124,7 +117,7 @@ export const createGeneralHelpFlow = ({ ticketForm = {}, setTicketForm = () => {
         if (chatState.userInput && chatState.userInput.includes("Other")) {
           return "general_help_additional_keywords";
         } else {
-          return "general_help_email";
+          return "general_help_priority";
         }
       }
     },
@@ -153,21 +146,28 @@ export const createGeneralHelpFlow = ({ ticketForm = {}, setTicketForm = () => {
           keywords: formattedKeywords
         });
       },
+      path: "general_help_priority"
+    },
+    general_help_priority: {
+      message: "Please select a priority for your issue:",
+      options: ["Lowest", "Low", "Medium", "High", "Highest"],
+      chatDisabled: true,
+      function: (chatState) => setTicketForm({...ticketForm, priority: chatState.userInput.toLowerCase()}),
       path: "general_help_email"
     },
     general_help_email: {
       message: "What is your email address?",
       function: (chatState) => setTicketForm({...ticketForm, email: chatState.userInput}),
-      path: "general_help_accessid"
-    },
-    general_help_accessid: {
-      message: "What is your ACCESS ID?",
-      function: (chatState) => setTicketForm({...ticketForm, accessid: chatState.userInput}),
       path: "general_help_name"
     },
     general_help_name: {
       message: "What is your name?",
       function: (chatState) => setTicketForm({...ticketForm, name: chatState.userInput}),
+      path: "general_help_accessid"
+    },
+    general_help_accessid: {
+      message: "What is your ACCESS ID?",
+      function: (chatState) => setTicketForm({...ticketForm, accessId: chatState.userInput}),
       path: "general_help_ticket_summary"
     },
     general_help_ticket_summary: {
@@ -177,10 +177,12 @@ export const createGeneralHelpFlow = ({ ticketForm = {}, setTicketForm = () => {
           fileInfo = `\nAttachments: ${ticketForm.uploadedFiles.length} file(s) attached`;
         }
 
+        console.log("| 🔍 Debug ticketForm in summary:", ticketForm);
+
         return `Thank you for providing your issue details. Here's a summary:\n\n` +
                `Name: ${ticketForm.name || 'Not provided'}\n` +
                `Email: ${ticketForm.email || 'Not provided'}\n` +
-               `ACCESS ID: ${ticketForm.accessid || 'Not provided'}\n` +
+               `ACCESS ID: ${ticketForm.accessId || 'Not provided'}\n` +
                `Issue Summary: ${ticketForm.summary || 'Not provided'}\n` +
                `Category: ${ticketForm.category || 'Not provided'}\n` +
                `Priority: ${ticketForm.priority || 'Not provided'}\n` +
@@ -202,7 +204,7 @@ export const createGeneralHelpFlow = ({ ticketForm = {}, setTicketForm = () => {
         // Prepare form data
         const formData = {
           email: ticketForm.email || "",
-          customfield_10103: ticketForm.accessid || "",
+          customfield_10103: ticketForm.accessId || "",
           customfield_10108: ticketForm.name || "",
           summary: ticketForm.summary || "General Support Ticket",
           customfield_10111: ticketForm.category || "",
