@@ -24,7 +24,7 @@ export const createGeneralHelpFlow = ({ ticketForm = {}, setTicketForm = () => {
 
   return {
     // FORM flow - General Help Ticket Form Flow
-    general_help_: {
+    general_help_summary_subject: {
       message: "Provide a short title for your ticket.",
       function: (chatState) => setTicketForm({...ticketForm, summary: chatState.userInput}),
       path: "general_help_category"
